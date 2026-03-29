@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>CHIVESKELLA MIND | TEAL EDITION</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: 'Courier New', 'Fira Code', monospace;
+            background-color: #000;
+            touch-action: none;
+        }
+
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        .glitch-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .ascii-logo {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(8px, 2.5vw, 12px);
+            line-height: 1.2;
+            color: #00ccaa;
+            text-align: center;
+            white-space: pre;
+            text-shadow: 0 0 8px #00ccaa;
+            letter-spacing: 1px;
+            transform: scale(0.67);
+        }
+
+        .logo-header {
+            position: fixed;
+            top: max(10px, env(safe-area-inset-top));
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            pointer-events: auto;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease 0.2s, visibility 0.6s ease 0.2s;
+            width: max-content;
+            max-width: calc(100vw - 80px);
+            overflow: hidden;
+        }
+
+        .logo-header.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .header-ascii {
+            font-family: 'Courier New', monospace;
+            font-size: clamp(2.5px, 1vw, 5px);
+            line-height: 1.15;
+            color: #00ccaa;
+            text-shadow: 0 0 5px #00aa88;
+            white-space: pre;
+            margin: 0;
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            padding: 4px 8px;
+            border-left: 2px solid #00ccaa;
+            border-right: 2px solid #00ccaa;
+            transition: all 0.2s ease;
+        }
+
+        .logo-header:hover .header-ascii {
+            text-shadow: 0 0 10px #00ffcc, 0 0 5px #00aa88;
+            background: rgba(0, 15, 15, 0.9);
+        }
+
+        .nav-item {
+            position: fixed;
+            font-family: 'Courier New', monospace;
+            font-size: clamp(0.5rem, 2.5vw, 0.75rem);
+            letter-spacing: 1px;
+            color: #cccccc;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 100;
+            pointer-events: auto;
+            border: 1px solid #00ccaa;
+            border-radius: 4px;
+            opacity: 0;
+        }
+
+        .nav-item.visible { opacity: 1; }
+        .nav-item:active { opacity: 0.7; transform: scale(0.96); }
+        .nav-menu { top: max(15px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); }
+        .nav-contact { bottom: max(15px, env(safe-area-inset-bottom)); right: max(8px, env(safe-area-inset-right)); }
+        .nav-shop { bottom: max(15px, env(safe-area-inset-bottom)); left: max(8px, env(safe-area-inset-left)); }
+
+        .speed-indicator {
+            position: fixed;
+            top: max(15px, env(safe-area-inset-top));
+            left: max(8px, env(safe-area-inset-left));
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            padding: 4px 8px;
+            font-family: 'Courier New', monospace;
+            color: #00ccaa;
+            font-size: clamp(0.5rem, 2.2vw, 0.65rem);
+            pointer-events: auto;
+            cursor: pointer;
+            z-index: 10;
+            border-left: 2px solid #00ccaa;
+            border-radius: 4px;
+            opacity: 0;
+            transition: all 0.2s ease;
+        }
+
+        .speed-indicator.visible { opacity: 1; }
+        .speed-indicator:hover { background: rgba(0, 50, 50, 0.85); transform: scale(1.02); }
+
+        .speed-value {
+            font-size: clamp(0.65rem, 2.8vw, 0.9rem);
+            font-weight: bold;
+            color: #00ffcc;
+            margin-left: 4px;
+        }
+
+        .info {
+            position: fixed;
+            bottom: max(15px, env(safe-area-inset-bottom));
+            left: 0;
+            right: 0;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+            padding: 0 8px;
+            opacity: 0;
+        }
+
+        .info.visible { opacity: 1; }
+
+        .controls-hint {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            display: inline-block;
+            padding: 5px 10px;
+            font-size: clamp(0.5rem, 2.2vw, 0.65rem);
+            border: 1px solid #00ccaa;
+            font-family: 'Courier New', monospace;
+            color: #ccccaa;
+            border-radius: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+
+        .controls-hint kbd {
+            background: #1a1a1a;
+            border-radius: 3px;
+            padding: 2px 5px;
+            margin: 0 2px;
+            color: #00ffcc;
+            border: 1px solid #00ccaa;
+        }
+
+        .fade-out { animation: fadeOutMsg 1.5s forwards; }
+        @keyframes fadeOutMsg { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; display: none; } }
+
+        .satellite-tooltip {
+            position: fixed;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
+            border-left: 2px solid #00ccaa;
+            font-family: 'Courier New', monospace;
+            color: #cccccc;
+            padding: 5px 8px;
+            font-size: clamp(0.5rem, 2.2vw, 0.65rem);
+            z-index: 200;
+            pointer-events: none;
+            white-space: nowrap;
+            border-radius: 4px;
+            max-width: 70vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .hidden-tooltip { opacity: 0; visibility: hidden; }
+
+        .full-info-panel {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: min(300px, 88vw);
+            max-height: 70vh;
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            border: 2px solid #00ccaa;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #cccccc;
+            padding: 14px;
+            z-index: 500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            overflow-y: auto;
+            pointer-events: auto;
+        }
+
+        .full-info-panel.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+        .full-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00ccaa; padding-bottom: 8px; margin-bottom: 12px; }
+        .full-panel-title { font-size: clamp(0.8rem, 3.5vw, 1.1rem); font-weight: bold; color: #00ffcc; word-break: break-word; }
+        .full-close-btn { font-size: 1.4rem; cursor: pointer; color: #00ccaa; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 1px solid #00ccaa; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
+        .full-close-btn:hover { background: rgba(0, 204, 170, 0.2); }
+        .satellite-portrait { background: radial-gradient(circle, rgba(0,30,30,0.8), rgba(0,10,10,0.9)); border-radius: 50%; width: 60px; height: 60px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; border: 2px solid #00ccaa; }
+        .portrait-symbol { font-size: 1.8rem; color: #00ccaa; }
+        .info-section { margin: 8px 0; padding: 6px; background: rgba(0, 10, 10, 0.5); border-left: 2px solid #00ccaa; border-radius: 4px; }
+        .info-section-title { color: #00ffcc; font-weight: bold; margin-bottom: 5px; font-size: 0.65rem; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.6rem; }
+        .info-item { display: flex; justify-content: space-between; border-bottom: 1px dotted #006666; padding: 3px 0; }
+        .info-item.full-width { grid-column: 1 / -1; }
+        .info-label { color: #00aa88; flex-shrink: 0; margin-right: 6px; }
+        .info-value { color: #cccccc; text-align: right; word-break: break-word; }
+        .history-text { font-size: 0.6rem; line-height: 1.4; color: #aaaacc; }
+
+        .info-link {
+            color: #00ffcc;
+            text-decoration: none;
+            border-bottom: 1px dotted #00aa88;
+            word-break: break-all;
+            transition: color 0.2s;
+        }
+        .info-link:hover { color: #ffffff; }
+
+        .modal-base {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(0, 0, 0, 0.98);
+            backdrop-filter: blur(20px);
+            border: 2px solid #00ccaa;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #cccccc;
+            z-index: 400;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 30px rgba(0, 204, 170, 0.3);
+        }
+
+        .modal-base.open { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #00ccaa;
+            padding: 12px 16px;
+        }
+
+        .modal-title { font-size: 1rem; font-weight: bold; color: #00ffcc; letter-spacing: 2px; }
+
+        .modal-close {
+            font-size: 1.3rem; cursor: pointer; color: #00ccaa; width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid #00ccaa; border-radius: 4px; transition: all 0.2s; flex-shrink: 0;
+        }
+
+        .modal-close:hover { background: rgba(0, 204, 170, 0.2); transform: scale(1.05); }
+
+        .modal-footer { padding: 10px 16px; text-align: center; font-size: 0.55rem; color: #556666; border-top: 1px solid #0a2a2a; }
+
+        .contact-modal { width: min(340px, 88vw); padding: 0; }
+        .contact-body { padding: 16px; }
+        .contact-email { background: rgba(0, 30, 30, 0.6); padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #00ccaa; }
+        .email-label { color: #00aa88; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 8px; }
+        .email-address { font-size: 0.9rem; color: #00ffcc; word-break: break-all; }
+
+        .shop-modal { width: min(360px, 88vw); padding: 0; }
+        .shop-body { padding: 16px; }
+        .shop-message { background: rgba(0, 30, 30, 0.6); padding: 16px 12px; border-radius: 8px; text-align: center; border-left: 3px solid #00ccaa; }
+        .shop-message p { margin: 8px 0; line-height: 1.45; font-size: 0.6rem; }
+        .shop-highlight { color: #00ffcc; font-weight: bold; letter-spacing: 1px; }
+
+        .velocity-modal { width: min(290px, 80vw); padding: 0; }
+        .velocity-body { padding: 16px; }
+        .slider-container { margin: 16px 0; }
+        .slider-label { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem; color: #00aa88; }
+
+        input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; background: #1a3a3a; border-radius: 2px; outline: none; }
+        input[type="range"]:focus { outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #00ffcc; cursor: pointer; border: none; box-shadow: 0 0 8px #00ffcc; }
+        .slider-value { text-align: center; margin-top: 14px; font-size: 1.1rem; color: #00ffcc; font-weight: bold; }
+
+        .menu-modal { width: min(350px, 90vw); max-height: 75vh; padding: 0; display: flex; flex-direction: column; }
+        .menu-list-container { flex: 1; overflow-y: auto; padding: 6px 8px; }
+        .menu-list-container::-webkit-scrollbar { width: 3px; }
+        .menu-list-container::-webkit-scrollbar-track { background: transparent; }
+        .menu-list-container::-webkit-scrollbar-thumb { background: #00aa88; border-radius: 2px; }
+
+        .menu-satellite-item {
+            display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 3px;
+            background: rgba(0, 20, 20, 0.5); border: 1px solid transparent; border-radius: 6px;
+            cursor: pointer; transition: all 0.2s ease; user-select: none;
+        }
+
+        .menu-satellite-item:hover { background: rgba(0, 50, 50, 0.7); border-color: #00ccaa; transform: translateX(3px); }
+        .menu-satellite-item:active { transform: scale(0.98) translateX(3px); }
+
+        .menu-sat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 5px currentColor; }
+        .menu-sat-info { flex: 1; min-width: 0; }
+        .menu-sat-name { font-size: 0.7rem; font-weight: bold; color: #00ffcc; letter-spacing: 1px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-sat-meta { font-size: 0.55rem; color: #668888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-sat-arrow { color: #00aa88; font-size: 0.65rem; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+        .menu-satellite-item:hover .menu-sat-arrow { opacity: 1; }
+        .menu-count { padding: 5px 10px 2px; font-size: 0.55rem; color: #446666; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+    <div class="glitch-overlay" id="glitchOverlay">
+        <div class="ascii-logo" id="asciiLogo"></div>
+    </div>
+
+    <div class="logo-header" id="logoHeader">
+        <pre class="header-ascii" id="headerAscii"></pre>
+    </div>
+
+    <div class="nav-item nav-menu" id="menuBtn">[ MENU ]</div>
+    <div class="nav-item nav-contact" id="contactBtn">[ CONTACT ]</div>
+    <div class="nav-item nav-shop" id="shopBtn">[ SHOP ]</div>
+    <div class="speed-indicator" id="speedIndicator">> VEL <span class="speed-value" id="animSpeed">28</span>%</div>
+    <div class="info" id="infoContainer"><div class="controls-hint" id="hintMsg">[SPACE] JUMP | [TAP] INFO | 🖱️ ROTATE</div></div>
+    <div id="satelliteTooltip" class="satellite-tooltip hidden-tooltip"><span id="tooltipName" style="color:#00ffcc; font-weight:bold;">-</span><br><span id="tooltipClass">-</span> | <span id="tooltipYear">-</span></div>
+
+    <div id="fullInfoPanel" class="full-info-panel">
+        <div class="full-panel-header">
+            <span class="full-panel-title" id="fullPanelTitle">◈ ◈ ◈</span>
+            <div class="full-close-btn" id="fullCloseBtn">✕</div>
+        </div>
+        <div style="text-align:center;">
+            <div class="satellite-portrait" id="satellitePortrait"><span class="portrait-symbol">◈</span></div>
+        </div>
+        <div class="info-section">
+            <div class="info-section-title">◈ CORE DATA ◈</div>
+            <div class="info-grid">
+                <div class="info-item"><span class="info-label">NAME:</span><span class="info-value" id="fullName">-</span></div>
+                <div class="info-item"><span class="info-label">CLASS:</span><span class="info-value" id="fullClass">-</span></div>
+                <div class="info-item full-width"><span class="info-label">YEAR:</span><span class="info-value" id="fullYear">-</span></div>
+            </div>
+        </div>
+        <div class="info-section">
+            <div class="info-section-title">◈ COMPOSITION ◈</div>
+            <div id="fullComposition" style="font-size:0.6rem;">-</div>
+        </div>
+        <div class="info-section">
+            <div class="info-section-title">◈ CHRONICLES ◈</div>
+            <div id="fullHistory" class="history-text">-</div>
+        </div>
+    </div>
+
+    <div id="menuModal" class="modal-base menu-modal">
+        <div class="modal-header">
+            <span class="modal-title">◈ SATELLITES ◈</span>
+            <div class="modal-close" id="menuModalCloseBtn">✕</div>
+        </div>
+        <div class="menu-count" id="menuCount">◈ 11 OBJECTS ◈</div>
+        <div class="menu-list-container" id="menuListContainer"></div>
+        <div class="modal-footer"><span>◈ tap to inspect ◈</span></div>
+    </div>
+
+    <div id="contactModal" class="modal-base contact-modal">
+        <div class="modal-header">
+            <span class="modal-title">◈ CONTACT ◈</span>
+            <div class="modal-close" id="modalCloseBtn">✕</div>
+        </div>
+        <div class="contact-body">
+            <div class="contact-email">
+                <div class="email-label">✉ EMAIL</div>
+                <div class="email-address">offline_realm_5s@icloud.com</div>
+            </div>
+        </div>
+        <div class="modal-footer"><span>◈ reach out for inquiries ◈</span></div>
+    </div>
+
+    <div id="shopModal" class="modal-base shop-modal">
+        <div class="modal-header">
+            <span class="modal-title">◈ SHOP ◈</span>
+            <div class="modal-close" id="shopModalCloseBtn">✕</div>
+        </div>
+        <div class="shop-body">
+            <div class="shop-message">
+                <p><span class="shop-highlight">◈ DM FOR INQUIRIES ◈</span></p>
+                <p>📦 <span class="shop-highlight">CHIVESKELLA MIND</span> offers:<br>
+                → custom garment production<br>
+                → unique styling services<br>
+                → full garment production cycle curation<br>
+                → collaborative creative projects</p>
+                <p>✉ <span class="shop-highlight">offline_realm_5s@icloud.com</span><br>
+                or DM via <span class="shop-highlight">@chiveskella</span></p>
+                <p style="font-size:0.65rem; margin-top:8px;">◈ open for collaborations & custom orders ◈</p>
+            </div>
+        </div>
+        <div class="modal-footer"><span>◈ let's create something extraordinary ◈</span></div>
+    </div>
+
+    <div id="velocityModal" class="modal-base velocity-modal">
+        <div class="modal-header">
+            <span class="modal-title">◈ VELOCITY ◈</span>
+            <div class="modal-close" id="velocityModalCloseBtn">✕</div>
+        </div>
+        <div class="velocity-body">
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span>◈ ORBIT SPEED</span>
+                    <span id="sliderValueLabel">28%</span>
+                </div>
+                <input type="range" id="velocitySlider" min="0" max="100" step="1" value="28">
+                <div class="slider-value"><span id="sliderPercent">28</span>%</div>
+            </div>
+        </div>
+        <div class="modal-footer"><span>◈ drag to adjust speed ◈</span></div>
+    </div>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/" } }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        // ========== ASCII LOGO — M I N D центрирован относительно CHIVESKELLA ==========
+        const letterDefs = {
+            'C': { w: 6, lines: [' █████', ' ██   ', ' ██   ', ' ██   ', ' █████'] },
+            'H': { w: 7, lines: ['██   ██', '██   ██', '███████', '██   ██', '██   ██'] },
+            'I': { w: 5, lines: [' ███ ', '  ██ ', '  ██ ', '  ██ ', ' ███ '] },
+            'V': { w: 7, lines: ['██   ██', '██   ██', ' ██ ██ ', '  ████ ', '   ██  '] },
+            'E': { w: 5, lines: ['█████', '██   ', '█████', '██   ', '█████'] },
+            'S': { w: 5, lines: ['█████', '██   ', ' ███ ', '   ██ ', '█████'] },
+            'K': { w: 6, lines: ['██  ██', '██ ██ ', '███   ', '██ ██ ', '██  ██'] },
+            'L': { w: 5, lines: ['██   ', '██   ', '██   ', '██   ', '█████'] },
+            'A': { w: 7, lines: [' ████ ', '██  ██', '███████', '██  ██', '██  ██'] }
+        };
+
+        const logoWord = 'CHIVESKELLA';
+        const letterGap = '   ';
+        const asciiH = 5;
+        const rawLogoLines = [];
+
+        // Вычисляем ширину слова CHIVESKELLA в символах
+        let logoWidth = 0;
+        for (let i = 0; i < logoWord.length; i++) {
+            logoWidth += letterDefs[logoWord[i]].w;
+            if (i > 0) logoWidth += letterGap.length;
+        }
+
+        for (let row = 0; row < asciiH; row++) {
+            let line = '';
+            for (let i = 0; i < logoWord.length; i++) {
+                if (i > 0) line += letterGap;
+                line += letterDefs[logoWord[i]].lines[row];
+            }
+            rawLogoLines.push(line);
+        }
+
+        // Центрируем M I N D относительно CHIVESKELLA
+        rawLogoLines.push('');
+        const mindText = '░▒▓█ M I N D █▓▒░';
+        const mindPad = Math.max(0, Math.floor((logoWidth - mindText.length) / 2));
+        rawLogoLines.push(' '.repeat(mindPad) + mindText);
+
+        const maxLogoLen = Math.max(...rawLogoLines.map(l => l.length));
+        const logoLines = [
+            '╔' + '═'.repeat(maxLogoLen + 2) + '╗',
+            ...rawLogoLines.map(l => '║ ' + l.padEnd(maxLogoLen) + ' ║'),
+            '╚' + '═'.repeat(maxLogoLen + 2) + '╝'
+        ];
+
+        const asciiArtString = logoLines.join('\n');
+
+        // ========== ДАННЫЕ СПУТНИКОВ ==========
+        const satelliteData = [
+            { name: "PAUSEMAG", composition: "https://pausemag.co.uk/2017/12/instagrammer-of-the-week-chiveskella/", year: "2017", classType: "Interview", history: "An interview for UK based online magazine PAUSE MAGAZINE about my approach to outfits." },
+            { name: "TRASHCAMO", composition: "https://inhabitat.com/trash-camo-raises-awareness-and-money-to-combat-pollution/", year: "2021", classType: "Collection", history: "A collaborative collection with eco activist collective RosEco and Chiveskella presents ironic fashion collection to raise awareness on a forest pollution." },
+            { name: "KRUZHOK", composition: "https://theblueprint.ru/fashion/industry/marka-kruzhok", year: "2021", classType: "Collection", history: "A year long collaboration with the brand Kruzhok with the result of multiple projects, including collection focused on interdisciplinary collaboration resulting metanarrative driven futuristic approach to the garments." },
+            { name: "KAPPA", composition: "https://www.sportmaster.ru/promo/5255975/", year: "2021", classType: "Campaign", history: "Metaverse driven fashion campaign for a brand KAPPA, featuring digital avatars presenting a new approach to the sportswear in the digital form, and photoshoot displayed across multiple countries in authorised retailers." },
+            { name: "FLAP PROJECT", composition: "https://www.youtube.com/watch?v=4hQwEkHETYM", year: "2021", classType: "Interview", history: "A fashion show upcycle challenge where I give a participants an instruction to upcycling garments and then judge their results." },
+            { name: "ÖMANKÖ x Levi's", composition: "https://www.youtube.com/watch?v=1r51BGDcQJg", year: "2019", classType: "Modelling", history: "A denim campaign where I starring as one of the mascot characters." },
+            { name: "NIKE", composition: "https://vk.com/@techuntermagazine-nike-workshop-po-sozdaniu-inkluzivnoi-sportivnoi-odezhdy-int", year: "2019", classType: "Workshop", history: "A workshop where I leaded the group of students to create a unique accessible sport uniform from NIKE's counterparts." },
+            { name: "LAMODA", composition: "https://www.lamoda.ru/blog/article/pyat-obrazov-ot-blogera-chiveskella-yarkih-zapominayushihsya-i-trendovyh/", year: "2021", classType: "Interview", history: "An interview about my approach to styling technics." },
+            { name: "K16CH1", composition: "https://www.k16ch1.com", year: "2024 — ongoing", classType: "Brand Designer", history: "An ongoing creative direction for the womenswear fashion brand K16CH1, which is presented at the Balcony Paris, Imply Hongkong, Studio 183 Berlin, Forumist Stockholm, Deli'cs Singapore." },
+            { name: "TVOE", composition: "Web and Stores", year: "2022 — 2024", classType: "Graphic Designer", history: "A graphic design curation for a fashion retailer TVOE, including web graphics and retail stores decoration." },
+            { name: "MASTERS PLAN", composition: "Urban planning", year: "2017 — 2021", classType: "Architect", history: "An architecture practice as an urban planner on multiple projects, including work with the Kengo Kuma architects on a housing project." }
+        ];
+
+        const glowColors = ['#00ffcc', '#00ccaa', '#00aa88', '#00ffaa', '#00cc99', '#00aa77', '#00ffbb', '#00cc88', '#00aa66', '#00ff99', '#00cc77'];
+        const glowIntensities = [0.55, 0.35, 0.45, 0.65, 0.30, 0.50, 0.60, 0.40, 0.70, 0.35, 0.55];
+        const sphereColors = [0x226666, 0x226655, 0x226644, 0x227755, 0x226633, 0x228866, 0x227744, 0x226622, 0x229955, 0x227733, 0x228855];
+        const portraitSymbols = ['◈', '●', '◆', '▲', '■', '♥', '♦', '♣', '♠', '★', '☾'];
+
+        // ========== МОДАЛЬНЫЕ ОКНА ==========
+        function closeAllModals() { document.querySelectorAll('.modal-base').forEach(m => m.classList.remove('open')); }
+        function openModal(id) { closeAllModals(); document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+        document.addEventListener('click', (e) => {
+            document.querySelectorAll('.modal-base.open').forEach(modal => {
+                if (!modal.contains(e.target)) {
+                    const map = { menuModal:'menuBtn', contactModal:'contactBtn', shopModal:'shopBtn', velocityModal:'speedIndicator' };
+                    const tid = map[modal.id];
+                    if (tid && e.target.id !== tid && !e.target.closest('#' + tid)) modal.classList.remove('open');
+                }
+            });
+        });
+
+        const velocitySlider = document.getElementById('velocitySlider');
+        const sliderValueLabel = document.getElementById('sliderValueLabel');
+        const sliderPercent = document.getElementById('sliderPercent');
+        const animSpeedSpan = document.getElementById('animSpeed');
+        let userSpeedPercent = 28, userSpeedFactor = 0.28, isHovering = false;
+        let targetSpeed = userSpeedFactor, currentSpeed = userSpeedFactor;
+
+        function updateSliderDisplay(v) { sliderValueLabel.textContent = v + '%'; sliderPercent.textContent = v; if (!isHovering) animSpeedSpan.textContent = v; }
+        function setVelocity(p) { userSpeedPercent = Math.min(100, Math.max(0, p)); userSpeedFactor = userSpeedPercent / 100; updateSliderDisplay(userSpeedPercent); if (!isHovering) targetSpeed = userSpeedFactor; }
+        velocitySlider.addEventListener('input', e => setVelocity(parseInt(e.target.value)));
+        document.getElementById('speedIndicator').addEventListener('click', e => { e.stopPropagation(); velocitySlider.value = userSpeedPercent; updateSliderDisplay(userSpeedPercent); openModal('velocityModal'); });
+        document.getElementById('velocityModalCloseBtn').addEventListener('click', () => closeModal('velocityModal'));
+
+        document.getElementById('contactBtn').addEventListener('click', e => { e.stopPropagation(); openModal('contactModal'); });
+        document.getElementById('modalCloseBtn').addEventListener('click', () => closeModal('contactModal'));
+        document.getElementById('shopBtn').addEventListener('click', e => { e.stopPropagation(); openModal('shopModal'); });
+        document.getElementById('shopModalCloseBtn').addEventListener('click', () => closeModal('shopModal'));
+
+        const menuListContainer = document.getElementById('menuListContainer');
+        const menuCountEl = document.getElementById('menuCount');
+
+        function buildMenuList() {
+            menuListContainer.innerHTML = '';
+            menuCountEl.textContent = `◈ ${satelliteData.length} OBJECTS ◈`;
+            satelliteData.forEach((sat, i) => {
+                const item = document.createElement('div');
+                item.className = 'menu-satellite-item';
+                const dc = glowColors[i % glowColors.length];
+                item.innerHTML = `<div class="menu-sat-dot" style="background:${dc};color:${dc};"></div><div class="menu-sat-info"><div class="menu-sat-name">${sat.name}</div><div class="menu-sat-meta">${sat.classType} | ${sat.year}</div></div><div class="menu-sat-arrow">►</div>`;
+                item.addEventListener('click', e => { e.stopPropagation(); closeModal('menuModal'); showFullInfo(sat, i); });
+                menuListContainer.appendChild(item);
+            });
+        }
+        buildMenuList();
+        document.getElementById('menuBtn').addEventListener('click', e => { e.stopPropagation(); buildMenuList(); openModal('menuModal'); });
+        document.getElementById('menuModalCloseBtn').addEventListener('click', () => closeModal('menuModal'));
+
+        const fullPanel = document.getElementById('fullInfoPanel');
+        function showFullInfo(data, ci) {
+            document.getElementById('fullPanelTitle').innerHTML = `◈ ${data.name} ◈`;
+            document.getElementById('fullName').innerHTML = data.name;
+            document.getElementById('fullClass').innerHTML = data.classType;
+            document.getElementById('fullYear').innerHTML = data.year;
+            const compEl = document.getElementById('fullComposition');
+            if (data.composition.startsWith('http://') || data.composition.startsWith('https://')) {
+                compEl.innerHTML = `<a class="info-link" href="${data.composition}" target="_blank" rel="noopener noreferrer">${data.composition}</a>`;
+            } else {
+                compEl.innerHTML = data.composition;
+            }
+            document.getElementById('fullHistory').innerHTML = data.history;
+            document.getElementById('satellitePortrait').innerHTML = `<span class="portrait-symbol" style="color:${glowColors[ci % glowColors.length]}">${portraitSymbols[ci % portraitSymbols.length]}</span>`;
+            fullPanel.classList.add('open');
+        }
+        document.getElementById('fullCloseBtn').addEventListener('click', () => fullPanel.classList.remove('open'));
+        document.addEventListener('click', e => { if (fullPanel.classList.contains('open') && !fullPanel.contains(e.target)) fullPanel.classList.remove('open'); });
+
+        // ========== ASCII GLITCH АНИМАЦИЯ ==========
+        const asciiLogoContainer = document.getElementById('asciiLogo');
+        const glitchChars = ['░', '▒', '▓', '█', '◈', '◆', '●', '■', '▲', '▼', '◄', '►'];
+        function rndGlitch() { return glitchChars[Math.floor(Math.random() * glitchChars.length)]; }
+        function glitchLine(len) { let s = ''; for (let i = 0; i < len; i++) s += rndGlitch(); return s; }
+
+        async function animateLogoAssembly() {
+            const total = logoLines.length;
+            const revealed = new Array(total).fill(false);
+            const gLines = logoLines.map(l => glitchLine(l.length));
+            asciiLogoContainer.textContent = gLines.join('\n');
+
+            function render() {
+                asciiLogoContainer.textContent = logoLines.map((l, i) => revealed[i] ? l : gLines[i]).join('\n');
+            }
+
+            for (let i = 0; i < total; i++) {
+                await new Promise(resolve => {
+                    let cnt = 0;
+                    const iv = setInterval(() => {
+                        if (cnt < 5) { gLines[i] = glitchLine(logoLines[i].length); render(); cnt++; }
+                        else { clearInterval(iv); revealed[i] = true; render(); resolve(); }
+                    }, 25);
+                });
+                await new Promise(r => setTimeout(r, 36));
+            }
+
+            for (let p = 0; p < 3; p++) {
+                asciiLogoContainer.style.textShadow = '0 0 24px #00ffcc, 0 0 12px #00aa88';
+                await new Promise(r => setTimeout(r, 63));
+                asciiLogoContainer.style.textShadow = '0 0 8px #00ccaa';
+                await new Promise(r => setTimeout(r, 63));
+            }
+
+            document.getElementById('headerAscii').textContent = asciiArtString;
+            document.getElementById('glitchOverlay').classList.add('hidden');
+            document.getElementById('logoHeader').classList.add('visible');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.add('visible'));
+            document.getElementById('speedIndicator').classList.add('visible');
+            document.getElementById('infoContainer').classList.add('visible');
+            setTimeout(() => { const h = document.getElementById('hintMsg'); if (h) h.classList.add('fade-out'); }, 6000);
+        }
+
+        setTimeout(() => animateLogoAssembly(), 300);
+
+        document.getElementById('logoHeader').addEventListener('click', () => {
+            camera.position.set(0, 1.5, 5.5);
+            controls.target.set(0, 0.9, 0);
+            controls.update();
+        });
+
+        // ========== THREE.JS СЦЕНА ==========
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000000);
+        scene.fog = new THREE.FogExp2(0x000000, 0.006);
+
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const camera = new THREE.PerspectiveCamera(isMobile ? 55 : 42, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, isMobile ? 0.9 : 1.2, isMobile ? 5.5 : 4.8);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: !isMobile });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        document.body.appendChild(renderer.domElement);
+
+        const effectComposer = new EffectComposer(renderer);
+        effectComposer.addPass(new RenderPass(scene, camera));
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.3);
+        bloomPass.threshold = 0.05;
+        bloomPass.strength = isMobile ? 0.45 : 0.65;
+        effectComposer.addPass(bloomPass);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.rotateSpeed = isMobile ? 0.7 : 1.2;
+        controls.enableZoom = true;
+        controls.enablePan = false;
+        controls.target.set(0, 0.65, 0);
+
+        // Звёздное небо
+        const starCvs = document.createElement('canvas');
+        starCvs.width = 1024; starCvs.height = 1024;
+        const sCtx = starCvs.getContext('2d');
+        sCtx.fillStyle = '#000'; sCtx.fillRect(0, 0, 1024, 1024);
+        for (let i = 0; i < 2500; i++) {
+            const g = 100 + Math.random() * 155;
+            sCtx.fillStyle = `rgba(${g},${g},${g},${0.2 + Math.random() * 0.4})`;
+            sCtx.beginPath();
+            sCtx.arc(Math.random() * 1024, Math.random() * 1024, Math.random() * 1.2 + 0.3, 0, Math.PI * 2);
+            sCtx.fill();
+        }
+        const skySphere = new THREE.Mesh(new THREE.SphereGeometry(580, 64, 64), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(starCvs), side: THREE.BackSide, transparent: true, opacity: 0.85 }));
+        scene.add(skySphere);
+
+        // Пол
+        const gridHelper = new THREE.GridHelper(280, 140, 0x00ccaa, 0x335566);
+        gridHelper.position.y = -0.72; gridHelper.material.transparent = true; gridHelper.material.opacity = 0.25;
+        scene.add(gridHelper);
+        const fineGrid = new THREE.GridHelper(280, 280, 0x00aa88, 0x226655);
+        fineGrid.position.y = -0.7; fineGrid.material.transparent = true; fineGrid.material.opacity = 0.12;
+        scene.add(fineGrid);
+        const shadowReceiver = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9, metalness: 0.05, transparent: true, opacity: 0.3 }));
+        shadowReceiver.rotation.x = -Math.PI / 2; shadowReceiver.position.y = -0.74; shadowReceiver.receiveShadow = true;
+        scene.add(shadowReceiver);
+
+        // Планета
+        const planetGroup = new THREE.Group();
+        scene.add(planetGroup);
+        const planetCore = new THREE.Mesh(new THREE.SphereGeometry(0.76, isMobile ? 64 : 128, isMobile ? 64 : 128), new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0x004444, emissiveIntensity: 0.2, metalness: 0.3, roughness: 0.6 }));
+        planetCore.castShadow = true; planetCore.receiveShadow = true;
+        planetGroup.add(planetCore);
+        planetGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.82, isMobile ? 48 : 96, isMobile ? 48 : 96), new THREE.MeshStandardMaterial({ color: 0x334455, transparent: true, opacity: 0.1, emissive: 0x004455, emissiveIntensity: 0.08 })));
+        const planetGlow = new THREE.PointLight(0x00aa88, 0.45, 6.5);
+        planetGroup.add(planetGlow);
+
+        // Спутники
+        const smallSpheres = [];
+        for (let i = 0; i < satelliteData.length; i++) {
+            const size = 0.1 + Math.random() * 0.06;
+            const mat = new THREE.MeshStandardMaterial({ color: sphereColors[i], emissive: parseInt(glowColors[i].slice(1), 16), emissiveIntensity: glowIntensities[i] * 0.7, metalness: 0.5, roughness: 0.35 });
+            const sphere = new THREE.Mesh(new THREE.SphereGeometry(size, isMobile ? 32 : 64, isMobile ? 32 : 64), mat);
+            sphere.castShadow = !isMobile; sphere.receiveShadow = true;
+            sphere.add(new THREE.PointLight(glowColors[i], glowIntensities[i] * 0.5, 2.8));
+            const hR = 1.42 + Math.random() * 0.45, vA = 0.35 + Math.random() * 0.45, cY = 0.55 + Math.random() * 0.35;
+            const bS = 0.55 + Math.random() * 0.45, ph = Math.random() * Math.PI * 2, el = 0.7 + Math.random() * 0.6;
+            sphere.userData = { horRadius: hR, vertAmp: vA, centerY: cY, baseSpeed: bS, currentSpeed: bS, phase: ph, ellipticity: el, angle: Math.random() * Math.PI * 2, satelliteIndex: i, light: sphere.children[0], lightIntensity: glowIntensities[i], isHovered: false };
+            scene.add(sphere);
+            smallSpheres.push(sphere);
+        }
+
+        // Траектории
+        const trajectories = [];
+        smallSpheres.forEach(s => {
+            const d = s.userData, pts = [];
+            for (let j = 0; j <= 140; j++) { const a = (j / 140) * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a * d.ellipticity + d.phase) * d.horRadius, d.centerY + Math.sin(a * 1.6 + d.phase) * d.vertAmp, Math.sin(a) * d.horRadius)); }
+            const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x00aa88, transparent: true, opacity: 0.3 }));
+            scene.add(line);
+            trajectories.push(line);
+        });
+
+        // Частицы на орбитах
+        const orbParticles = [];
+        smallSpheres.forEach(sphere => {
+            const data = sphere.userData, group = [];
+            for (let i = 0; i < (isMobile ? 30 : 50); i++) {
+                const offset = (i / (isMobile ? 30 : 50)) * Math.PI * 2;
+                const p = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.018, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.55 }));
+                scene.add(p);
+                group.push({ point: p, offset });
+            }
+            orbParticles.push({ group, orbitData: data });
+        });
+        function updateOrbitParticles() {
+            orbParticles.forEach(orbit => {
+                const data = orbit.orbitData;
+                orbit.group.forEach(p => {
+                    const a = (p.offset + (data.angle || 0) * 1.2) % (Math.PI * 2);
+                    p.point.geometry.dispose();
+                    p.point.geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array([Math.cos(a * data.ellipticity + data.phase) * data.horRadius, data.centerY + Math.sin(a * 1.6 + data.phase) * data.vertAmp, Math.sin(a) * data.horRadius]), 3));
+                });
+            });
+        }
+
+        // Пыль
+        const dustCount = isMobile ? 500 : 1200;
+        const dustGeo = new THREE.BufferGeometry();
+        const dustPos = new Float32Array(dustCount * 3);
+        for (let i = 0; i < dustCount; i++) { dustPos[i * 3] = (Math.random() - 0.5) * 7; dustPos[i * 3 + 1] = Math.random() * 2.5 - 0.4; dustPos[i * 3 + 2] = (Math.random() - 0.5) * 7; }
+        dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+        const dustParticles = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0x88ffdd, size: 0.016, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35 }));
+        scene.add(dustParticles);
+
+        const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0x88ffdd, size: 0.045, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35 }));
+        const starPos = [];
+        for (let i = 0; i < (isMobile ? 1200 : 2400); i++) starPos.push((Math.random() - 0.5) * 620, Math.random() * 150 + 5, (Math.random() - 0.5) * 580);
+        stars.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        scene.add(stars);
+
+        scene.add(new THREE.AmbientLight(0x222222, 0.55));
+        const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
+        mainLight.position.set(3.5, 6.2, -2.8); mainLight.castShadow = true; mainLight.shadow.mapSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024);
+        scene.add(mainLight);
+        const backLight = new THREE.PointLight(0x00aa88, 0.45); backLight.position.set(-2.5, 3, -3.5); scene.add(backLight);
+        const fillLight = new THREE.PointLight(0x226655, 0.4); fillLight.position.set(1.5, 1.8, 2); scene.add(fillLight);
+
+        const raycaster = new THREE.Raycaster();
+        const touchVec = new THREE.Vector2();
+        let currentHover = null;
+        const tooltip = document.getElementById('satelliteTooltip');
+
+        function showTooltip(data, x, y) {
+            document.getElementById('tooltipName').innerHTML = data.name;
+            document.getElementById('tooltipClass').innerHTML = data.classType;
+            document.getElementById('tooltipYear').innerHTML = data.year;
+            let l = x + 15, t = y - 40;
+            if (l + 200 > window.innerWidth) l = x - 180;
+            if (t < 10) t = y + 20;
+            tooltip.style.left = l + 'px'; tooltip.style.top = t + 'px';
+            tooltip.classList.remove('hidden-tooltip');
+        }
+        function hideTooltip() { tooltip.classList.add('hidden-tooltip'); }
+
+        function updateHover(x, y) {
+            touchVec.x = (x / window.innerWidth) * 2 - 1;
+            touchVec.y = -(y / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(touchVec, camera);
+            const hits = raycaster.intersectObjects(smallSpheres);
+            smallSpheres.forEach(s => { s.userData.isHovered = false; s.userData.targetScale = 1; });
+            if (hits.length) {
+                const h = hits[0].object;
+                h.userData.isHovered = true; h.userData.targetScale = 1.65;
+                const info = satelliteData[h.userData.satelliteIndex];
+                if (currentHover !== h) {
+                    currentHover = h;
+                    const v = h.position.clone().project(camera);
+                    showTooltip(info, (v.x * 0.5 + 0.5) * window.innerWidth, (-(v.y * 0.5 - 0.5)) * window.innerHeight);
+                    isHovering = true; targetSpeed = 0;
+                } else {
+                    const v = h.position.clone().project(camera);
+                    tooltip.style.left = ((v.x * 0.5 + 0.5) * window.innerWidth + 15) + 'px';
+                    tooltip.style.top = ((-(v.y * 0.5 - 0.5)) * window.innerHeight - 40) + 'px';
+                }
+            } else if (currentHover) {
+                currentHover = null; hideTooltip(); isHovering = false; targetSpeed = userSpeedFactor;
+            }
+            smallSpheres.forEach(s => { const sc = s.scale.x, tg = s.userData.targetScale || 1; const nv = sc * 0.88 + tg * 0.12; s.scale.set(nv, nv, nv); });
+        }
+
+        function handleTap(x, y) {
+            touchVec.x = (x / window.innerWidth) * 2 - 1;
+            touchVec.y = -(y / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(touchVec, camera);
+            const hits = raycaster.intersectObjects(smallSpheres);
+            if (hits.length) {
+                const hit = hits[0].object, idx = hit.userData.satelliteIndex;
+                showFullInfo(satelliteData[idx], idx);
+                hit.material.emissiveIntensity = hit.userData.lightIntensity * 1.2;
+                hit.userData.light.intensity = hit.userData.lightIntensity * 0.9;
+                setTimeout(() => { if (!hit.userData.isHovered) { hit.material.emissiveIntensity = hit.userData.lightIntensity * 0.7; hit.userData.light.intensity = hit.userData.lightIntensity * 0.5; } }, 400);
+            }
+        }
+
+        document.addEventListener('mousemove', e => updateHover(e.clientX, e.clientY));
+        document.addEventListener('click', e => handleTap(e.clientX, e.clientY));
+        document.addEventListener('touchmove', e => { e.preventDefault(); updateHover(e.touches[0].clientX, e.touches[0].clientY); });
+        document.addEventListener('touchstart', e => { if (e.touches.length === 1) handleTap(e.touches[0].clientX, e.touches[0].clientY); });
+
+        let isGrounded = true, yVel = 0, yPos = 0.58;
+        window.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (isGrounded) { yVel = 4.9; isGrounded = false; planetGlow.intensity = 0.8; } } });
+        function updatePhysics(dt) { if (!isGrounded) { yVel += -12 * dt; yPos += yVel * dt; if (yPos <= 0.58) { yPos = 0.58; yVel = 0; isGrounded = true; planetGlow.intensity = 0.45; } } planetGroup.position.y = yPos; controls.target.y = yPos; }
+
+        function updateSpeed() {
+            currentSpeed = currentSpeed * 0.94 + targetSpeed * 0.06;
+            currentSpeed = Math.min(1.0, Math.max(0, currentSpeed));
+            smallSpheres.forEach(s => { s.userData.currentSpeed = s.userData.baseSpeed * currentSpeed; });
+            animSpeedSpan.textContent = isHovering ? '0' : Math.round(userSpeedPercent);
+        }
+
+        let animTime = 0;
+        function animateSpheres(dt) {
+            smallSpheres.forEach(s => {
+                const d = s.userData;
+                if (!d.isHovered) d.angle += dt * d.currentSpeed;
+                s.position.set(Math.cos(d.angle * d.ellipticity + d.phase) * d.horRadius, d.centerY + Math.sin(d.angle * 1.7 + d.phase * 1.3) * d.vertAmp, Math.sin(d.angle) * d.horRadius);
+                const pulse = d.lightIntensity * 0.5 + Math.sin(animTime * 2.5 + d.angle) * d.lightIntensity * 0.15;
+                s.material.emissiveIntensity = d.isHovered ? d.lightIntensity * 1.1 : pulse;
+                if (d.light) d.light.intensity = (d.isHovered ? d.lightIntensity * 0.8 : d.lightIntensity * 0.4) + Math.sin(animTime * 3 + d.angle) * d.lightIntensity * 0.1;
+            });
+        }
+        function animateTrails() {
+            trajectories.forEach((l, i) => { l.material.opacity = 0.3 + Math.sin(animTime * 1.2 + i) * 0.01; });
+            dustParticles.rotation.y += 0.005 * (currentSpeed / 0.28);
+            dustParticles.rotation.x += 0.002 * (currentSpeed / 0.28);
+            skySphere.rotation.y += 0.00008;
+            planetGlow.intensity = 0.45 + Math.sin(animTime * 1.2) * 0.08;
+            const gp = 0.25 + Math.sin(animTime * 0.8) * 0.05;
+            gridHelper.material.opacity = gp; fineGrid.material.opacity = gp * 0.5;
+        }
+
+        let lastTime = performance.now();
+        function loop() {
+            const now = performance.now(), dt = Math.min(0.033, (now - lastTime) / 1000); lastTime = now;
+            updateSpeed(); updatePhysics(dt); animateSpheres(dt); updateOrbitParticles(); animateTrails();
+            controls.update(); animTime += dt; stars.rotation.y += 0.0001;
+            effectComposer.render();
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); effectComposer.setSize(window.innerWidth, window.innerHeight); });
+    </script>
+</body>
+</html>
