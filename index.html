@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>CHIVESKELLA MIND | TEAL EDITION</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,7 +25,6 @@
         .nav-contact { bottom: max(15px, env(safe-area-inset-bottom)); right: max(8px, env(safe-area-inset-right)); }
         .nav-about { bottom: max(15px, env(safe-area-inset-bottom)); left: max(8px, env(safe-area-inset-left)); }
 
-        /* ===== CONTROL PANEL — опущен на 2 ряда ===== */
         .ctrl-panel {
             position: fixed;
             top: max(52px, calc(env(safe-area-inset-top) + 42px));
@@ -70,6 +70,11 @@
         @keyframes arrowPulse {
             0%, 100% { opacity: 0.2; text-shadow: 0 0 2px #003322; }
             50% { opacity: 0.9; text-shadow: 0 0 8px #00ffcc, 0 0 16px #00aa88; }
+        }
+        /* Мобильная стрелка — в 2 раза крупнее */
+        @media (max-width: 768px) {
+            .scroll-arrow .arrow-shape { font-size: clamp(1rem, 4.4vw, 1.5rem); letter-spacing: 0.4em; }
+            .scroll-arrow .arrow-text { font-size: clamp(0.8rem, 3.6vw, 1.1rem); letter-spacing: 3px; margin-top: 3px; }
         }
 
         #scrollSection { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
@@ -316,34 +321,21 @@
         document.getElementById('fullCloseBtn').addEventListener('click', () => fullPanel.classList.remove('open'));
         document.addEventListener('click', e => { if (fullPanel.classList.contains('open') && !fullPanel.contains(e.target)) fullPanel.classList.remove('open'); });
 
-        /* ===== AUDIO — автозапуск при загрузке ===== */
         const audio = document.getElementById('bgAudio');
         let aVol = 0.3, isMuted = false;
         audio.volume = aVol;
         const sndRow = document.getElementById('sndRow'), sndSlider = document.getElementById('sndSlider'), sndVal = document.getElementById('sndVal'), sndToggle = document.getElementById('sndToggle');
-
-        /* пробуем запустить сразу + при первом взаимодействии */
         function tryPlay() { if (!isMuted && audio.paused) audio.play().catch(() => {}); }
         tryPlay();
         document.addEventListener('click', tryPlay, { once: true });
         document.addEventListener('touchstart', tryPlay, { once: true });
-
         sndSlider.addEventListener('input', e => {
-            aVol = parseInt(e.target.value) / 100;
-            audio.volume = aVol;
-            sndVal.textContent = e.target.value;
+            aVol = parseInt(e.target.value) / 100; audio.volume = aVol; sndVal.textContent = e.target.value;
             if (aVol < 0.01 && !isMuted) { isMuted = true; sndRow.classList.add('muted'); audio.pause(); }
             if (aVol >= 0.01 && isMuted) { isMuted = false; sndRow.classList.remove('muted'); audio.play().catch(() => {}); }
         });
-        sndToggle.addEventListener('click', e => {
-            e.stopPropagation();
-            isMuted = !isMuted;
-            sndRow.classList.toggle('muted', isMuted);
-            if (isMuted) audio.pause();
-            else { audio.play().catch(() => {}); }
-        });
+        sndToggle.addEventListener('click', e => { e.stopPropagation(); isMuted = !isMuted; sndRow.classList.toggle('muted', isMuted); if (isMuted) audio.pause(); else { audio.play().catch(() => {}); } });
 
-        /* ===== SCROLL ===== */
         const sceneCont = document.getElementById('sceneContainer'), scrollSec = document.getElementById('scrollSection'), scrollArr = document.getElementById('scrollArrow');
         const arrowShapeEl = document.getElementById('arrowShape');
         const arrowTextEl = document.getElementById('arrowText');
@@ -363,7 +355,6 @@
         scrollArr.addEventListener('click', () => { sTarg = isScrolled ? 0 : maxS; sAnim = true; animScroll(); });
         window.addEventListener('wheel', e => { if (sAnim) return; sOff = Math.max(0, Math.min(maxS, sOff + e.deltaY * 0.5)); updScroll(); }, { passive: true });
 
-        /* ===== GLITCH ===== */
         const asciiLogoContainer = document.getElementById('asciiLogo');
         const glitchChars = ['\u2591', '\u2592', '\u2593', '\u2588', '\u25C8', '\u25C6', '\u25CF', '\u25A0', '\u25B2', '\u25BC', '\u25C4', '\u25BA'];
         function rndGlitch() { return glitchChars[Math.floor(Math.random() * glitchChars.length)]; }
@@ -385,7 +376,6 @@
         setTimeout(() => animateLogoAssembly(), 300);
         document.getElementById('logoHeader').addEventListener('click', () => { camera.position.set(0, 1.5, 5.5); controls.target.set(0, 0.9, 0); controls.update(); });
 
-        /* ===== THREE.JS ===== */
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000); scene.fog = new THREE.FogExp2(0x000000, 0.006);
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const camera = new THREE.PerspectiveCamera(isMobile ? 55 : 42, window.innerWidth / window.innerHeight, 0.1, 1000);
