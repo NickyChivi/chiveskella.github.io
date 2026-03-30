@@ -24,7 +24,19 @@
         .nav-contact { bottom: max(15px, env(safe-area-inset-bottom)); right: max(8px, env(safe-area-inset-right)); }
         .nav-about { bottom: max(15px, env(safe-area-inset-bottom)); left: max(8px, env(safe-area-inset-left)); }
 
-        .ctrl-panel { position: fixed; top: max(10px, env(safe-area-inset-top)); left: max(8px, env(safe-area-inset-left)); z-index: 100; display: flex; flex-direction: column; gap: 6px; opacity: 0; transition: opacity 0.6s ease 0.2s; pointer-events: none; }
+        /* ===== CONTROL PANEL — опущен на 2 ряда ===== */
+        .ctrl-panel {
+            position: fixed;
+            top: max(52px, calc(env(safe-area-inset-top) + 42px));
+            left: max(8px, env(safe-area-inset-left));
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            opacity: 0;
+            transition: opacity 0.6s ease 0.2s;
+            pointer-events: none;
+        }
         .ctrl-panel.visible { opacity: 1; pointer-events: auto; }
         .ctrl-row { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); padding: 4px 8px; border-radius: 4px; border-left: 2px solid #00ccaa; }
         .ctrl-label { font-family: 'Courier New', monospace; font-size: clamp(0.5rem, 2vw, 0.6rem); color: #00aa88; white-space: nowrap; user-select: none; letter-spacing: 0.5px; }
@@ -38,7 +50,6 @@
         .ctrl-row.muted .ctrl-slider { opacity: 0.25; pointer-events: none; }
         .ctrl-row.muted .ctrl-val { color: #334444; }
 
-        /* ===== SCROLL ARROW — minimalist ===== */
         .scroll-arrow {
             position: fixed;
             bottom: max(8px, calc(env(safe-area-inset-bottom) - 2px));
@@ -54,57 +65,28 @@
             animation: arrowPulse 2.2s ease-in-out infinite;
             line-height: 1.1;
         }
-        .scroll-arrow .arrow-shape {
-            font-size: clamp(0.55rem, 2.2vw, 0.75rem);
-            letter-spacing: 0.3em;
-        }
-        .scroll-arrow .arrow-text {
-            font-size: clamp(0.45rem, 1.8vw, 0.55rem);
-            letter-spacing: 2px;
-            margin-top: 2px;
-        }
+        .scroll-arrow .arrow-shape { font-size: clamp(0.55rem, 2.2vw, 0.75rem); letter-spacing: 0.3em; }
+        .scroll-arrow .arrow-text { font-size: clamp(0.45rem, 1.8vw, 0.55rem); letter-spacing: 2px; margin-top: 2px; }
         @keyframes arrowPulse {
             0%, 100% { opacity: 0.2; text-shadow: 0 0 2px #003322; }
             50% { opacity: 0.9; text-shadow: 0 0 8px #00ffcc, 0 0 16px #00aa88; }
         }
 
-        /* ===== SCROLL SECTION — COMING SOON with cards ===== */
         #scrollSection { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
         #scrollSection.visible { opacity: 1; pointer-events: auto; }
         .scroll-gradient { position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 50%, #000 100%); }
         .coming-wrap { position: relative; z-index: 1; text-align: center; padding: 0 16px; width: 100%; max-width: 520px; }
         .coming-title { font-family: 'Courier New', monospace; font-size: clamp(0.9rem, 3.5vw, 1.6rem); color: #00ccaa; text-shadow: 0 0 14px #00ffcc, 0 0 28px #00aa88; letter-spacing: clamp(3px, 1.2vw, 8px); margin-bottom: 24px; }
-
         .cards-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .product-card {
-            flex: 0 0 clamp(90px, 28vw, 150px);
-            background: rgba(0,15,15,0.5);
-            border: 1px solid #1a3333;
-            border-radius: 6px;
-            overflow: hidden;
-            transition: border-color 0.3s;
-        }
+        .product-card { flex: 0 0 clamp(90px, 28vw, 150px); background: rgba(0,15,15,0.5); border: 1px solid #1a3333; border-radius: 6px; overflow: hidden; transition: border-color 0.3s; }
         .product-card:hover { border-color: #00aa88; }
-        .card-img-placeholder {
-            width: 100%;
-            aspect-ratio: 1;
-            background: rgba(0,10,10,0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: 1px solid #1a3333;
-        }
-        .card-cross {
-            font-size: clamp(1rem, 4vw, 1.6rem);
-            color: #1a3333;
-            line-height: 1;
-        }
+        .card-img-placeholder { width: 100%; aspect-ratio: 1; background: rgba(0,10,10,0.6); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #1a3333; }
+        .card-cross { font-size: clamp(1rem, 4vw, 1.6rem); color: #1a3333; line-height: 1; }
         .card-info { padding: 8px 6px; }
         .card-dash { height: 1px; background: #1a3333; margin-bottom: 5px; border-radius: 1px; }
         .card-dash:nth-child(1) { width: 60%; }
         .card-dash:nth-child(2) { width: 80%; }
         .card-dash:nth-child(3) { width: 45%; }
-
         .coming-footer { margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.45rem; color: #223333; letter-spacing: 4px; }
 
         #sceneContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; transition: transform 0.5s ease-out; will-change: transform; }
@@ -186,7 +168,7 @@
             <input type="range" class="ctrl-slider" id="velSlider" min="0" max="100" step="1" value="28">
             <span class="ctrl-val" id="velVal">28</span>
         </div>
-        <div class="ctrl-row muted" id="sndRow">
+        <div class="ctrl-row" id="sndRow">
             <span class="ctrl-icon" id="sndToggle">&#9834;</span>
             <input type="range" class="ctrl-slider" id="sndSlider" min="0" max="100" value="30">
             <span class="ctrl-val" id="sndVal">30</span>
@@ -212,27 +194,15 @@
             <div class="cards-row">
                 <div class="product-card">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
-                    <div class="card-info">
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                    </div>
+                    <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
                 </div>
                 <div class="product-card">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
-                    <div class="card-info">
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                    </div>
+                    <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
                 </div>
                 <div class="product-card">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
-                    <div class="card-info">
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                    </div>
+                    <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
                 </div>
             </div>
             <div class="coming-footer">&#9670; &#9670; &#9670;</div>
@@ -267,7 +237,7 @@
         <div class="modal-footer"><span>&#9670; let's create something extraordinary &#9670;</span></div>
     </div>
 
-    <audio id="bgAudio" src="202603301220.mp3" preload="none" loop></audio>
+    <audio id="bgAudio" src="202603301220.mp3" preload="auto" loop></audio>
 
     <script type="importmap">
         { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/" } }
@@ -346,21 +316,40 @@
         document.getElementById('fullCloseBtn').addEventListener('click', () => fullPanel.classList.remove('open'));
         document.addEventListener('click', e => { if (fullPanel.classList.contains('open') && !fullPanel.contains(e.target)) fullPanel.classList.remove('open'); });
 
-        const audio = document.getElementById('bgAudio'); audio.volume = 0.3;
-        let isMuted = true;
+        /* ===== AUDIO — автозапуск при загрузке ===== */
+        const audio = document.getElementById('bgAudio');
+        let aVol = 0.3, isMuted = false;
+        audio.volume = aVol;
         const sndRow = document.getElementById('sndRow'), sndSlider = document.getElementById('sndSlider'), sndVal = document.getElementById('sndVal'), sndToggle = document.getElementById('sndToggle');
-        sndSlider.addEventListener('input', e => { audio.volume = parseInt(e.target.value) / 100; sndVal.textContent = e.target.value; if (isMuted && audio.volume > 0.01) { isMuted = false; sndRow.classList.remove('muted'); audio.play().catch(() => {}); } if (audio.volume < 0.01 && !isMuted) { isMuted = true; sndRow.classList.add('muted'); audio.pause(); } });
-        sndToggle.addEventListener('click', e => { e.stopPropagation(); isMuted = !isMuted; sndRow.classList.toggle('muted', isMuted); if (isMuted) audio.pause(); else { audio.play().catch(() => {}); } });
+
+        /* пробуем запустить сразу + при первом взаимодействии */
+        function tryPlay() { if (!isMuted && audio.paused) audio.play().catch(() => {}); }
+        tryPlay();
+        document.addEventListener('click', tryPlay, { once: true });
+        document.addEventListener('touchstart', tryPlay, { once: true });
+
+        sndSlider.addEventListener('input', e => {
+            aVol = parseInt(e.target.value) / 100;
+            audio.volume = aVol;
+            sndVal.textContent = e.target.value;
+            if (aVol < 0.01 && !isMuted) { isMuted = true; sndRow.classList.add('muted'); audio.pause(); }
+            if (aVol >= 0.01 && isMuted) { isMuted = false; sndRow.classList.remove('muted'); audio.play().catch(() => {}); }
+        });
+        sndToggle.addEventListener('click', e => {
+            e.stopPropagation();
+            isMuted = !isMuted;
+            sndRow.classList.toggle('muted', isMuted);
+            if (isMuted) audio.pause();
+            else { audio.play().catch(() => {}); }
+        });
 
         /* ===== SCROLL ===== */
         const sceneCont = document.getElementById('sceneContainer'), scrollSec = document.getElementById('scrollSection'), scrollArr = document.getElementById('scrollArrow');
         const arrowShapeEl = document.getElementById('arrowShape');
         const arrowTextEl = document.getElementById('arrowText');
         let sOff = 0, maxS = 500, isScrolled = false, sAnim = false, sTarg = 0, scrollFade = 0;
-
         const arrowDownShape = '█ █ █\n  █';
         const arrowUpShape = '  █\n█ █ █';
-
         function updScroll() {
             scrollFade = Math.min(1, sOff / maxS);
             sceneCont.style.transform = 'translateY(' + (-sOff * 0.8) + 'px)';
