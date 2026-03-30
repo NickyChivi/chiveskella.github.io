@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -91,7 +91,7 @@
         .velocity-body { padding: 16px; }
         .slider-container { margin: 16px 0; }
         .slider-label { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.75rem; color: #00aa88; }
-        input[type="range] { width: 100%; height: 4px; -webkit-appearance: none; background: #1a3a3a; border-radius: 2px; outline: none; }
+        input[type="range"] { width: 100%; height: 4px; -webkit-appearance: none; background: #1a3a3a; border-radius: 2px; outline: none; }
         input[type="range"]:focus { outline: none; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #00ffcc; cursor: pointer; border: none; box-shadow: 0 0 8px #00ffcc; }
         .slider-value { text-align: center; margin-top: 14px; font-size: 1.1rem; color: #00ffcc; font-weight: bold; }
@@ -390,7 +390,6 @@
         // ===== MENU TABS =====
         const tabProjects = document.getElementById('tabProjects');
         const tabAbout = document.getElementById('tabAbout');
-        const tabContent = document.getElementById('tabContent');
         const menuListContainer = document.getElementById('menuListContainer');
         const menuCountEl = document.getElementById('menuCount');
 
@@ -409,11 +408,13 @@
 
         function showTab(tab) {
             tabProjects.classList.toggle('active', tab === 'projects');
-            tabAbout.classList.toggle('active', tabAbout === 'about');
-            tabContent.innerHTML = tab === 'projects' ? buildMenuListHTML() : buildAboutHTML();
+            tabAbout.classList.toggle('active', tab === 'about'); // FIXED: was tabAbout === 'about'
+            menuListContainer.innerHTML = tab === 'projects' ? buildMenuListHTML() : buildAboutHTML();
         }
 
-        buildMenuListHTML();
+        // Initialize with projects tab
+        showTab('projects');
+        
         document.getElementById('menuBtn').addEventListener('click', e => { e.stopPropagation(); showTab('projects'); openModal('menuModal'); });
         document.getElementById('menuModalCloseBtn').addEventListener('click', () => closeModal('menuModal'));
         tabProjects.addEventListener('click', () => showTab('projects'));
@@ -520,23 +521,24 @@
                 await new Promise(r=>setTimeout(r,63));
             }
             document.getElementById('headerAscii').textContent = asciiArtString;
-            document.getElementById('glitch-overlay').classList.add('hidden');
-            document.getElementById('logo-header').classList.add('visible');
+            // FIXED: ID mismatches - camelCase in HTML, was kebab-case in JS
+            document.getElementById('glitchOverlay').classList.add('hidden');
+            document.getElementById('logoHeader').classList.add('visible');
             document.querySelectorAll('.nav-item').forEach(el => el.classList.add('visible'));
-            document.getElementById('speed-indicator').classList.add('visible');
-            document.getElementById('sound-widget').classList.add('visible');
-            document.getElementById('info-container').classList.add('visible');
+            document.getElementById('speedIndicator').classList.add('visible');
+            document.getElementById('soundWidget').classList.add('visible');
+            document.getElementById('infoContainer').classList.add('visible');
             setTimeout(()=>{const h=document.getElementById('hintMsg');if(h)h.classList.add('fade-out');},6000);
         }
         setTimeout(()=>animateLogoAssembly(),300);
 
-        document.getElementById('logo-header').addEventListener('click',()=>{ camera.position.set(0,1.5,5.5);controls.target.set(0,0.9,0);controls.update(); });
+        document.getElementById('logoHeader').addEventListener('click',()=>{ camera.position.set(0,1.5,5.5);controls.target.set(0,0.9,0);controls.update(); });
 
         // ========== SCROLL ==========
         const sceneContainer = document.getElementById('sceneContainer');
         const belowSection = document.getElementById('belowSection');
         const scrollArrow = document.getElementById('scrollArrow');
-        const scrollArrowClassList = ['animating','animating'];
+        const scrollArrowClassList = 'animating';
         let scrollOffset = 0;
         const maxScroll = 600;
         let controlsFrozen = false;
@@ -546,8 +548,8 @@
             sceneContainer.style.transform = `translateY(${-scrollOffset * 0.5}px)`;
             belowSection.classList.toggle('visible', progress > 0.01);
             scrollArrow.style.opacity = 1 - progress;
-            if (progress >= 0.99) scrollArrow.classList.remove(scrollArrowClassList[0]);
-            else if (progress < 0.01) scrollArrow.classList.add(scrollArrowClassList[0]);
+            if (progress >= 0.99) scrollArrow.classList.remove(scrollArrowClassList);
+            else if (progress < 0.01) scrollArrow.classList.add(scrollArrowClassList);
             controlsFrozen = progress > 0.01;
             controls.enableZoom = !controlsFrozen;
         }
@@ -608,7 +610,7 @@
         sCtx.fillStyle='#000';sCtx.fillRect(0,0,1024,1024);
         for(let i=0;i<2500;i++){
             const g=100+Math.random()*155;
-            sCtx.fillStyle=`rgba(${g},${g},${g},${g},${0.2+Math.random()*0.4})`;
+            sCtx.fillStyle=`rgba(${g},${g},${g},${0.2+Math.random()*0.4})`;
             sCtx.beginPath();
             sCtx.arc(Math.random()*1024,Math.random()*1024,Math.random()*1.2+0.3,0,Math.PI*2);
             sCtx.fill();
@@ -633,8 +635,20 @@
         const planetCore=new THREE.Mesh(new THREE.SphereGeometry(0.76,isMobile?64:128,isMobile?64:128),new THREE.MeshStandardMaterial({color:0x222222,emissive:0x004444,emissiveIntensity:0.2,metalness:0.3,roughness:0.6}));
         planetCore.castShadow=true;planetCore.receiveShadow=true;
         planetGroup.add(planetCore);
-        planetGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.82,isMobile?48:96,isMobile?48:96),new THREE.MeshStandardMaterial({color:0x334455,transparent:true,opacity:0.1,emissive:0x004455,emissiveIntensity:0.08}));
+        
+        // FIXED: Added hazeLayer definition (was undefined)
+        const hazeLayer = new THREE.Mesh(
+            new THREE.SphereGeometry(0.82, isMobile ? 48 : 96, isMobile ? 48 : 96),
+            new THREE.MeshStandardMaterial({
+                color: 0x334455,
+                transparent: true,
+                opacity: 0.1,
+                emissive: 0x004455,
+                emissiveIntensity: 0.08
+            })
+        );
         planetGroup.add(hazeLayer);
+        
         const planetGlow=new THREE.PointLight(0x00aa88,0.45,6.5);
         planetGroup.add(planetGlow);
 
@@ -682,7 +696,7 @@
                 orbit.group.forEach(p=>{
                     const a=(p.offset+(data.angle||0)*1.2)%(Math.PI*2);
                     p.point.geometry.dispose();
-                    p.point.geometry=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array([Math.cos(a*data.ellipticity+data.phase)*data.horRadius,data.centerY+Math.sin(a*1.6+data.phase)*data.vertAmp,Math.sin(a)*data.horRadius]),3));
+                    p.point.geometry=new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array([Math.cos(a*data.ellipticity+data.phase)*data.horRadius,data.centerY+Math.sin(a*1.6+data.phase)*d.vertAmp,Math.sin(a)*data.horRadius]),3));
                 });
             });
         }
@@ -704,7 +718,9 @@
 
         scene.add(new THREE.AmbientLight(0x222222,0.55));
         const mainLight=new THREE.DirectionalLight(0xffffff,0.9);
-        mainLight.position.set(3.5,6.2,-2.8);mainLight.castShadow=true;mainLight.shadow.mapSize.set(isMobile?512:1024:1024);
+        mainLight.position.set(3.5,6.2,-2.8);mainLight.castShadow=true;
+        // FIXED: Corrected ternary operator syntax
+        mainLight.shadow.mapSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024);
         scene.add(mainLight);
         const backLight=new THREE.PointLight(0x00aa88,0.45);backLight.position.set(-2.5,3,-3.5);scene.add(backLight);
         const fillLight=new THREE.PointLight(0x226655,0.4);fillLight.position.set(1.5,1.8,2);scene.add(fillLight);
@@ -748,7 +764,7 @@
                     tooltip.style.top=((-(v.y*0.5-0.5))*window.innerHeight-40)+'px';
                 }
             }else if(currentHover){currentHover=null;hideTooltip();isHovering=false;targetSpeed=userSpeedFactor;}
-            smallSpheres.forEach(s=>{const sc=s.scale.x,tg=s.userData.targetScale||1;const nv=sc*0.88+tg*0.12;s.scale.set(nv,nv,nv,nv);});
+            smallSpheres.forEach(s=>{const sc=s.scale.x,tg=s.userData.targetScale||1;const nv=sc*0.88+tg*0.12;s.scale.set(nv,nv,nv);}); // FIXED: removed 4th arg
         }
 
         function handleTap(x,y){
