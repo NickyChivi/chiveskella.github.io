@@ -71,7 +71,6 @@
             0%, 100% { opacity: 0.2; text-shadow: 0 0 2px #003322; }
             50% { opacity: 0.9; text-shadow: 0 0 8px #00ffcc, 0 0 16px #00aa88; }
         }
-        /* Мобильная стрелка — в 2 раза крупнее */
         @media (max-width: 768px) {
             .scroll-arrow .arrow-shape { font-size: clamp(1rem, 4.4vw, 1.5rem); letter-spacing: 0.4em; }
             .scroll-arrow .arrow-text { font-size: clamp(0.8rem, 3.6vw, 1.1rem); letter-spacing: 3px; margin-top: 3px; }
@@ -227,7 +226,7 @@
 
     <div id="menuModal" class="modal-base menu-modal">
         <div class="modal-header"><span class="modal-title">&#9670; SATELLITES &#9670;</span><div class="modal-close" id="menuModalCloseBtn">&#10005;</div></div>
-        <div class="menu-count" id="menuCount">&#9670; 11 OBJECTS &#9670;</div>
+        <div class="menu-count" id="menuCount">&#9670; 13 OBJECTS &#9670;</div>
         <div class="menu-list-container" id="menuListContainer"></div>
         <div class="modal-footer"><span>&#9670; tap to inspect &#9670;</span></div>
     </div>
@@ -288,12 +287,15 @@
             { name: "LAMODA", composition: "https://www.lamoda.ru/blog/article/pyat-obrazov-ot-blogera-chiveskella-yarkih-zapominayushihsya-i-trendovyh/", year: "2021", classType: "Interview", history: "An interview about my approach to styling technics." },
             { name: "K16CH1", composition: "https://www.k16ch1.com", year: "2024 \u2014 ongoing", classType: "Brand Designer", history: "An ongoing creative direction for the womenswear fashion brand K16CH1, which is presented at the Balcony Paris, Imply Hongkong, Studio 183 Berlin, Forumist Stockholm, Deli'cs Singapore." },
             { name: "TVOE", composition: "Web and Stores", year: "2022 \u2014 2024", classType: "Graphic Designer", history: "A graphic design curation for a fashion retailer TVOE, including web graphics and retail stores decoration." },
-            { name: "MASTERS PLAN", composition: "Urban planning", year: "2017 \u2014 2021", classType: "Architect", history: "An architecture practice as an urban planner on multiple projects, including work with the Kengo Kuma architects on a housing project." }
+            { name: "MASTERS PLAN", composition: "Urban planning", year: "2017 \u2014 2021", classType: "Architect", history: "An architecture practice as an urban planner on multiple projects, including work with the Kengo Kuma architects on a housing project." },
+            { name: "YANDEX", composition: "https://www.facebook.com/wearemagiccamp/videos/привет-ребята-придумали-эксперимент-возможно-штука-классно-работает-такие-слова-/875126296800474/", year: "2022", classType: "Collection", history: "A conceptual collection for Yandex corporation, made with creative agency Wearemagiccamp, exploring gamification of the clothing through interactive interchangable elements with linguistic program called 'Lemmas'." },
+            { name: "Maybe Therapy?", composition: '<a class="info-link" href="https://iskusstvo-info.ru/maybe-therapy-albiny-mohryakovoj/" target="_blank" rel="noopener noreferrer">iskusstvo-info.ru</a><br><a class="info-link" href="https://vladey.net/ru/artwork/7015" target="_blank" rel="noopener noreferrer">vladey.net</a><br><a class="info-link" href="https://vk.com/wall-92656044_1387" target="_blank" rel="noopener noreferrer">vk.com</a>', year: "2020", classType: "Collection", history: "A multidisciplinary art project by the artist Albina Mohryakova, exploring ritualistic approach to the psychological therapy, artist Stas Falkov made the inspired graphic design, which I translated into a thematic garment collection." }
         ];
-        const glowColors = ['#00ffcc', '#00ccaa', '#00aa88', '#00ffaa', '#00cc99', '#00aa77', '#00ffbb', '#00cc88', '#00aa66', '#00ff99', '#00cc77'];
-        const glowIntensities = [0.55, 0.35, 0.45, 0.65, 0.30, 0.50, 0.60, 0.40, 0.70, 0.35, 0.55];
-        const sphereColors = [0x226666, 0x226655, 0x226644, 0x227755, 0x226633, 0x228866, 0x227744, 0x226622, 0x229955, 0x227733, 0x228855];
-        const portraitSymbols = ['\u25C8', '\u25CF', '\u25C6', '\u25B2', '\u25A0', '\u2665', '\u2666', '\u2663', '\u2660', '\u2605', '\u263E'];
+        
+        const glowColors = ['#00ffcc', '#00ccaa', '#00aa88', '#00ffaa', '#00cc99', '#00aa77', '#00ffbb', '#00cc88', '#00aa66', '#00ff99', '#00cc77', '#00eebb', '#00ddaa'];
+        const glowIntensities = [0.55, 0.35, 0.45, 0.65, 0.30, 0.50, 0.60, 0.40, 0.70, 0.35, 0.55, 0.50, 0.45];
+        const sphereColors = [0x226666, 0x226655, 0x226644, 0x227755, 0x226633, 0x228866, 0x227744, 0x226622, 0x229955, 0x227733, 0x228855, 0x226644, 0x227766];
+        const portraitSymbols = ['\u25C8', '\u25CF', '\u25C6', '\u25B2', '\u25A0', '\u2665', '\u2666', '\u2663', '\u2660', '\u2605', '\u263E', '\u2726', '\u2736'];
 
         function closeAllModals() { document.querySelectorAll('.modal-base').forEach(m => m.classList.remove('open')); }
         function openModal(id) { closeAllModals(); document.getElementById(id).classList.add('open'); }
@@ -317,7 +319,22 @@
         document.getElementById('menuModalCloseBtn').addEventListener('click', () => closeModal('menuModal'));
 
         const fullPanel = document.getElementById('fullInfoPanel');
-        function showFullInfo(data, ci) { document.getElementById('fullPanelTitle').innerHTML = '\u25C8 ' + data.name + ' \u25C8'; document.getElementById('fullName').innerHTML = data.name; document.getElementById('fullClass').innerHTML = data.classType; document.getElementById('fullYear').innerHTML = data.year; const compEl = document.getElementById('fullComposition'); if (data.composition.startsWith('http')) compEl.innerHTML = '<a class="info-link" href="' + data.composition + '" target="_blank" rel="noopener noreferrer">' + data.composition + '</a>'; else compEl.innerHTML = data.composition; document.getElementById('fullHistory').innerHTML = data.history; document.getElementById('satellitePortrait').innerHTML = '<span class="portrait-symbol" style="color:' + glowColors[ci] + '">' + portraitSymbols[ci] + '</span>'; fullPanel.classList.add('open'); }
+        function showFullInfo(data, ci) { 
+            document.getElementById('fullPanelTitle').innerHTML = '\u25C8 ' + data.name + ' \u25C8'; 
+            document.getElementById('fullName').innerHTML = data.name; 
+            document.getElementById('fullClass').innerHTML = data.classType; 
+            document.getElementById('fullYear').innerHTML = data.year; 
+            const compEl = document.getElementById('fullComposition'); 
+            // Проверяем, является ли composition уже готовым HTML (как у Maybe Therapy?)
+            if (data.composition.startsWith('http')) {
+                compEl.innerHTML = '<a class="info-link" href="' + data.composition + '" target="_blank" rel="noopener noreferrer">' + data.composition + '</a>';
+            } else {
+                compEl.innerHTML = data.composition;
+            }
+            document.getElementById('fullHistory').innerHTML = data.history; 
+            document.getElementById('satellitePortrait').innerHTML = '<span class="portrait-symbol" style="color:' + glowColors[ci] + '">' + portraitSymbols[ci] + '</span>'; 
+            fullPanel.classList.add('open'); 
+        }
         document.getElementById('fullCloseBtn').addEventListener('click', () => fullPanel.classList.remove('open'));
         document.addEventListener('click', e => { if (fullPanel.classList.contains('open') && !fullPanel.contains(e.target)) fullPanel.classList.remove('open'); });
 
@@ -359,12 +376,27 @@
         const glitchChars = ['\u2591', '\u2592', '\u2593', '\u2588', '\u25C8', '\u25C6', '\u25CF', '\u25A0', '\u25B2', '\u25BC', '\u25C4', '\u25BA'];
         function rndGlitch() { return glitchChars[Math.floor(Math.random() * glitchChars.length)]; }
         function glitchLine(len) { let s = ''; for (let i = 0; i < len; i++) s += rndGlitch(); return s; }
+        
         async function animateLogoAssembly() {
             const total = logoLines.length, revealed = new Array(total).fill(false), gLines = logoLines.map(l => glitchLine(l.length));
             asciiLogoContainer.textContent = gLines.join('\n');
             function render() { asciiLogoContainer.textContent = logoLines.map((l, i) => revealed[i] ? l : gLines[i]).join('\n'); }
-            for (let i = 0; i < total; i++) { await new Promise(resolve => { let cnt = 0; const iv = setInterval(() => { if (cnt < 5) { gLines[i] = glitchLine(logoLines[i].length); render(); cnt++; } else { clearInterval(iv); revealed[i] = true; render(); resolve(); } }, 25); }); await new Promise(r => setTimeout(r, 36)); }
-            for (let p = 0; p < 3; p++) { asciiLogoContainer.style.textShadow = '0 0 24px #00ffcc, 0 0 12px #00aa88'; await new Promise(r => setTimeout(r, 63)); asciiLogoContainer.style.textShadow = '0 0 8px #00ccaa'; await new Promise(r => setTimeout(r, 63)); }
+            for (let i = 0; i < total; i++) { 
+                for (let j = 0; j < 5; j++) { 
+                    gLines[i] = glitchLine(logoLines[i].length); 
+                    render(); 
+                    await new Promise(r => requestAnimationFrame(r)); 
+                }
+                revealed[i] = true; 
+                render(); 
+                await new Promise(r => setTimeout(r, 40)); 
+            }
+            for (let p = 0; p < 3; p++) { 
+                asciiLogoContainer.style.textShadow = '0 0 24px #00ffcc, 0 0 12px #00aa88'; 
+                await new Promise(r => setTimeout(r, 63)); 
+                asciiLogoContainer.style.textShadow = '0 0 8px #00ccaa'; 
+                await new Promise(r => setTimeout(r, 63)); 
+            }
             document.getElementById('headerAscii').textContent = asciiArtString;
             document.getElementById('glitchOverlay').classList.add('hidden');
             document.getElementById('logoHeader').classList.add('visible');
@@ -374,7 +406,6 @@
             setTimeout(() => { const h = document.getElementById('hintMsg'); if (h) h.classList.add('fade-out'); }, 6000);
         }
         setTimeout(() => animateLogoAssembly(), 300);
-        document.getElementById('logoHeader').addEventListener('click', () => { camera.position.set(0, 1.5, 5.5); controls.target.set(0, 0.9, 0); controls.update(); });
 
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000); scene.fog = new THREE.FogExp2(0x000000, 0.006);
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -384,9 +415,19 @@
         renderer.setSize(window.innerWidth, window.innerHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         sceneCont.appendChild(renderer.domElement);
 
-        const effectComposer = new EffectComposer(renderer); effectComposer.addPass(new RenderPass(scene, camera));
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.3);
-        bloomPass.threshold = 0.05; bloomPass.strength = isMobile ? 0.45 : 0.65; effectComposer.addPass(bloomPass);
+        let effectComposer = null;
+        let useComposer = true;
+        try {
+            effectComposer = new EffectComposer(renderer); 
+            effectComposer.addPass(new RenderPass(scene, camera));
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.3);
+            bloomPass.threshold = 0.2; 
+            bloomPass.strength = isMobile ? 0.45 : 0.65; 
+            effectComposer.addPass(bloomPass);
+        } catch(e) {
+            console.warn("Bloom init failed, fallback to standard render.", e);
+            useComposer = false;
+        }
 
         const controls = new OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = 0.06; controls.rotateSpeed = isMobile ? 0.7 : 1.2; controls.enableZoom = true; controls.enablePan = false; controls.target.set(0, 0.65, 0);
 
@@ -420,16 +461,41 @@
         const trajectories = [];
         smallSpheres.forEach(s => { const d = s.userData, pts = []; for (let j = 0; j <= 140; j++) { const a = (j / 140) * Math.PI * 2; pts.push(new THREE.Vector3(Math.cos(a * d.ellipticity + d.phase) * d.horRadius, d.centerY + Math.sin(a * 1.6 + d.phase) * d.vertAmp, Math.sin(a) * d.horRadius)); } const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x00aa88, transparent: true, opacity: 0.3 })); scene.add(line); trajectories.push(line); });
 
-        const orbParticles = [];
-        smallSpheres.forEach(sphere => { const data = sphere.userData, group = []; const pc = isMobile ? 30 : 50; for (let i = 0; i < pc; i++) { const offset = (i / pc) * Math.PI * 2; const p = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0x00ffcc, size: 0.018, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.55 })); scene.add(p); group.push({ point: p, offset }); } orbParticles.push({ group, orbitData: data }); });
-        function updateOrbitParticles() { const dim = 1 - scrollFade * scrollFade; orbParticles.forEach(orbit => { const data = orbit.orbitData; orbit.group.forEach(item => { const a = (item.offset + (data.angle || 0) * 1.2) % (Math.PI * 2); item.point.geometry.dispose(); item.point.geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array([Math.cos(a * data.ellipticity + data.phase) * data.horRadius, data.centerY + Math.sin(a * 1.6 + data.phase) * data.vertAmp, Math.sin(a) * data.horRadius]), 3)); item.point.material.opacity = 0.55 * dim; }); }); }
+        const particleCountPerSat = isMobile ? 30 : 50;
+        const totalOrbitParticles = smallSpheres.length * particleCountPerSat;
+        const orbPositions = new Float32Array(totalOrbitParticles * 3);
+        const orbGeo = new THREE.BufferGeometry();
+        orbGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
+        orbGeo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0.55, 0), 3.0); 
+        const orbParticlesMesh = new THREE.Points(orbGeo, new THREE.PointsMaterial({ 
+            color: 0x00ffcc, size: 0.018, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.55, depthWrite: false
+        }));
+        scene.add(orbParticlesMesh);
+
+        function updateOrbitParticles() { 
+            const dim = 1 - scrollFade * scrollFade;
+            const posArr = orbParticlesMesh.geometry.attributes.position.array;
+            let idx = 0;
+            smallSpheres.forEach(sphere => {
+                const data = sphere.userData;
+                for (let i = 0; i < particleCountPerSat; i++) {
+                    const offset = (i / particleCountPerSat) * Math.PI * 2;
+                    const a = (offset + (data.angle || 0) * 1.2) % (Math.PI * 2);
+                    posArr[idx++] = Math.cos(a * data.ellipticity + data.phase) * data.horRadius;
+                    posArr[idx++] = data.centerY + Math.sin(a * 1.6 + data.phase) * data.vertAmp;
+                    posArr[idx++] = Math.sin(a) * data.horRadius;
+                }
+            });
+            orbParticlesMesh.geometry.attributes.position.needsUpdate = true;
+            orbParticlesMesh.material.opacity = 0.55 * dim;
+        }
 
         const dustCount = isMobile ? 500 : 1200, dustGeo = new THREE.BufferGeometry(), dustPos = new Float32Array(dustCount * 3);
         for (let i = 0; i < dustCount; i++) { dustPos[i * 3] = (Math.random() - 0.5) * 7; dustPos[i * 3 + 1] = Math.random() * 2.5 - 0.4; dustPos[i * 3 + 2] = (Math.random() - 0.5) * 7; }
         dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
-        const dustParticles = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0x88ffdd, size: 0.016, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35 })); scene.add(dustParticles);
+        const dustParticles = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0x88ffdd, size: 0.016, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35, depthWrite: false })); scene.add(dustParticles);
 
-        const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0x88ffdd, size: 0.045, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35 }));
+        const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0x88ffdd, size: 0.045, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35, depthWrite: false }));
         const starPos = []; for (let i = 0; i < (isMobile ? 1200 : 2400); i++) starPos.push((Math.random() - 0.5) * 620, Math.random() * 150 + 5, (Math.random() - 0.5) * 580);
         stars.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3)); scene.add(stars);
 
@@ -508,12 +574,30 @@
             const now = performance.now(), dt = Math.min(0.033, (now - lastTime) / 1000); lastTime = now;
             updateSpeed(); updatePhysics(dt); animateSpheres(dt); updateOrbitParticles(); animateTrails();
             controls.update(); animTime += dt; stars.rotation.y += 0.0001;
-            effectComposer.render();
+            
+            if (useComposer && effectComposer) {
+                try {
+                    effectComposer.render();
+                } catch (err) {
+                    console.error("Bloom failed mid-render, falling back.", err);
+                    useComposer = false;
+                    renderer.render(scene, camera);
+                }
+            } else {
+                renderer.render(scene, camera);
+            }
             requestAnimationFrame(loop);
         }
         loop();
 
-        window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); effectComposer.setSize(window.innerWidth, window.innerHeight); });
+        document.getElementById('logoHeader').addEventListener('click', () => { camera.position.set(0, 1.5, 5.5); controls.target.set(0, 0.9, 0); controls.update(); });
+
+        window.addEventListener('resize', () => { 
+            camera.aspect = window.innerWidth / window.innerHeight; 
+            camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth, window.innerHeight); 
+            if (useComposer && effectComposer) effectComposer.setSize(window.innerWidth, window.innerHeight); 
+        });
     </script>
 </body>
 </html>
