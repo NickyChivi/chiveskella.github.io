@@ -82,8 +82,18 @@
         .coming-wrap { position: relative; z-index: 1; text-align: center; padding: 0 16px; width: 100%; max-width: 520px; }
         .coming-title { font-family: 'Courier New', monospace; font-size: clamp(0.9rem, 3.5vw, 1.6rem); color: #00ccaa; text-shadow: 0 0 14px #00ffcc, 0 0 28px #00aa88; letter-spacing: clamp(3px, 1.2vw, 8px); margin-bottom: 24px; }
         .cards-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .product-card { flex: 0 0 clamp(90px, 28vw, 150px); background: rgba(0,15,15,0.5); border: 1px solid #1a3333; border-radius: 6px; overflow: hidden; transition: border-color 0.3s; display: flex; flex-direction: column; }
-        .product-card:hover { border-color: #00aa88; }
+        .product-card { 
+            flex: 0 0 clamp(90px, 28vw, 150px); 
+            background: rgba(0,15,15,0.5); 
+            border: 1px solid #1a3333; 
+            border-radius: 6px; 
+            overflow: hidden; 
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+            display: flex; 
+            flex-direction: column; 
+            cursor: pointer;
+        }
+        .product-card:hover { border-color: #00aa88; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,204,170,0.1); }
         .card-img-placeholder { 
             width: 100%; 
             aspect-ratio: 1; 
@@ -94,8 +104,8 @@
             border-bottom: 1px solid #1a3333; 
             position: relative;
             overflow: hidden;
+            touch-action: none; /* Важно для корректной работы OrbitControls на мобильных */
         }
-        /* Контейнер для 3D модели внутри карточки */
         #glb-container {
             width: 100%;
             height: 100%;
@@ -105,7 +115,11 @@
             display: block;
         }
         .card-cross { font-size: clamp(1rem, 4vw, 1.6rem); color: #1a3333; line-height: 1; }
-        .card-info { padding: 8px 6px; }
+        
+        .card-info { padding: 8px 6px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .card-text { font-size: clamp(0.45rem, 1.8vw, 0.55rem); color: #cccccc; line-height: 1.3; text-align: left; }
+        .card-price { font-size: clamp(0.5rem, 2vw, 0.65rem); color: #00ffcc; margin-top: 4px; font-weight: bold; }
+        
         .card-dash { height: 1px; background: #1a3333; margin-bottom: 5px; border-radius: 1px; }
         .card-dash:nth-child(1) { width: 60%; }
         .card-dash:nth-child(2) { width: 80%; }
@@ -151,6 +165,60 @@
         .modal-close { font-size: 1.3rem; cursor: pointer; color: #00ccaa; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid #00ccaa; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
         .modal-close:hover { background: rgba(0,204,170,0.2); transform: scale(1.05); }
         .modal-footer { padding: 10px 16px; text-align: center; font-size: 0.55rem; color: #556666; border-top: 1px solid #0a2a2a; }
+
+        /* Стили для большого модального окна продукта */
+        .product-modal-lg { 
+            width: min(90vw, 600px); 
+            height: min(80vh, 700px);
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            border: 2px solid #00ffcc;
+        }
+        .product-modal-content {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            background: radial-gradient(circle at center, rgba(0,20,20,1), rgba(0,0,0,1));
+        }
+        #largeProductCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            outline: none;
+        }
+        .product-modal-info {
+            padding: 20px;
+            background: rgba(0,5,5,0.95);
+            border-top: 1px solid #00ccaa;
+            text-align: center;
+        }
+        .product-title-lg {
+            font-size: 1.2rem;
+            color: #00ffcc;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .product-desc-lg {
+            font-size: 0.9rem;
+            color: #aaaaaa;
+            margin-bottom: 12px;
+        }
+        .product-cta {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 1px solid #00ccaa;
+            color: #00ffcc;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .product-cta:hover {
+            background: rgba(0,204,170,0.2);
+            box-shadow: 0 0 15px rgba(0,204,170,0.4);
+        }
 
         .contact-modal { width: min(340px, 88vw); padding: 0; }
         .contact-body { padding: 16px; }
@@ -215,26 +283,25 @@
         <div class="coming-wrap">
             <div class="coming-title">COMING SOON</div>
             <div class="cards-row">
-                <!-- ПЕРВАЯ КАРТОЧКА: ТУТ БУДЕТ МОДЕЛЬ -->
-                <div class="product-card">
+                <!-- ПЕРВАЯ КАРТОЧКА: GLB + ТЕКСТ -->
+                <div class="product-card" id="card-1" data-type="glb" data-model="1.glb">
                     <div class="card-img-placeholder">
                         <div id="glb-container"></div>
                     </div>
                     <div class="card-info">
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
-                        <div class="card-dash"></div>
+                        <div class="card-text">Sculpted Shearling Jacket</div>
+                        <div class="card-price">80 USDT <br> <span style="font-size:0.7em; font-weight:normal; color:#888;">DM to purchase</span></div>
                     </div>
                 </div>
                 
                 <!-- ВТОРАЯ КАРТОЧКА -->
-                <div class="product-card">
+                <div class="product-card" id="card-2" data-type="placeholder">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
                     <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
                 </div>
                 
                 <!-- ТРЕТЬЯ КАРТОЧКА -->
-                <div class="product-card">
+                <div class="product-card" id="card-3" data-type="placeholder">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
                     <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
                 </div>
@@ -245,6 +312,17 @@
 
     <div class="info" id="infoContainer"><div class="controls-hint" id="hintMsg">[SPACE] JUMP | [TAP] INFO | &#128431; ROTATE</div></div>
     <div id="satelliteTooltip" class="satellite-tooltip hidden-tooltip"><span id="tooltipName" style="color:#00ffcc;font-weight:bold;">-</span><br><span id="tooltipClass">-</span> | <span id="tooltipYear">-</span></div>
+
+    <!-- БОЛЬШОЕ МОДАЛЬНОЕ ОКНО ПРОДУКТА -->
+    <div id="productModal" class="modal-base product-modal-lg">
+        <div class="modal-close" id="productModalCloseBtn" style="position: absolute; top: 10px; right: 10px; z-index: 10;">&#10005;</div>
+        <div class="product-modal-content" id="largeProductCanvas"></div>
+        <div class="product-modal-info">
+            <div class="product-title-lg">Sculpted Shearling Jacket</div>
+            <div class="product-desc-lg">Price: 80 USDT<br>Limited Edition / Handcrafted</div>
+            <div class="product-cta" onclick="window.location.href='mailto:offline_realm_5s@icloud.com'">DM TO PURCHASE</div>
+        </div>
+    </div>
 
     <div id="fullInfoPanel" class="full-info-panel">
         <div class="full-panel-header"><span class="full-panel-title" id="fullPanelTitle">&#9670; &#9670; &#9670;</span><div class="full-close-btn" id="fullCloseBtn">&#10005;</div></div>
@@ -283,7 +361,7 @@
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // Импортируем загрузчик GLB
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
         const letterDefs = {
             'C': { w: 6, lines: [' █████', ' ██   ', ' ██   ', ' ██   ', ' █████'] },
@@ -328,7 +406,11 @@
         const sphereColors = [0x226666, 0x226655, 0x226644, 0x227755, 0x226633, 0x228866, 0x227744, 0x226622, 0x229955, 0x227733, 0x228855, 0x226644, 0x227766];
         const portraitSymbols = ['\u25C8', '\u25CF', '\u25C6', '\u25B2', '\u25A0', '\u2665', '\u2666', '\u2663', '\u2660', '\u2605', '\u263E', '\u2726', '\u2736'];
 
-        function closeAllModals() { document.querySelectorAll('.modal-base').forEach(m => m.classList.remove('open')); }
+        function closeAllModals() { 
+            document.querySelectorAll('.modal-base').forEach(m => m.classList.remove('open'));
+            // Закрываем модальное окно продукта, если открыто
+            closeProductModal(); 
+        }
         function openModal(id) { closeAllModals(); document.getElementById(id).classList.add('open'); }
         function closeModal(id) { document.getElementById(id).classList.remove('open'); }
         document.addEventListener('click', e => { document.querySelectorAll('.modal-base.open').forEach(modal => { if (!modal.contains(e.target)) { const map = { menuModal: 'menuBtn', contactModal: 'contactBtn', aboutModal: 'aboutBtn' }; const tid = map[modal.id]; if (tid && e.target.id !== tid && !e.target.closest('#' + tid)) modal.classList.remove('open'); } }); });
@@ -600,66 +682,166 @@
             const gp = 0.25 + Math.sin(animTime * 0.8) * 0.05; gridHelper.material.opacity = gp; fineGrid.material.opacity = gp * 0.5;
         }
 
-        // --- PRODUCT CARD GLB LOGIC ---
+        // --- PRODUCT CARD LOGIC (SMALL & LARGE) ---
+        
+        // Variables for Small Scene
         let productModel = null;
         let productRenderer = null;
         let productScene = null;
         let productCamera = null;
+        let productControls = null;
         let productContainer = document.getElementById('glb-container');
 
+        // Variables for Large Scene (Modal)
+        let largeProductRenderer = null;
+        let largeProductScene = null;
+        let largeProductCamera = null;
+        let largeProductControls = null;
+        let largeProductModel = null;
+        let largeProductContainer = document.getElementById('largeProductCanvas');
+
+        // Initialize Small Product Scene
         function initProductCard3D() {
             if (!productContainer) return;
-
-            // Сцена для продукта
             productScene = new THREE.Scene();
-            
-            // Камера
             const aspect = productContainer.clientWidth / productContainer.clientHeight;
             productCamera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
             productCamera.position.set(0, 0, 2.5);
 
-            // Рендерер (прозрачный фон)
             productRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             productRenderer.setSize(productContainer.clientWidth, productContainer.clientHeight);
             productRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             productContainer.appendChild(productRenderer.domElement);
 
-            // Освещение для продукта
-            const pLight1 = new THREE.DirectionalLight(0xffffff, 1);
+            const pLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
             pLight1.position.set(2, 2, 5);
             productScene.add(pLight1);
             
-            const pLight2 = new THREE.DirectionalLight(0x00ccaa, 0.5); // Слегка подсвечиваем цветом бренда
+            const pLight2 = new THREE.DirectionalLight(0x00ccaa, 0.6);
             pLight2.position.set(-2, 1, 3);
             productScene.add(pLight2);
             
-            productScene.add(new THREE.AmbientLight(0x404040, 1.5));
+            productScene.add(new THREE.AmbientLight(0x404040, 1.2));
 
-            // Загрузка модели
+            // Controls for the small card (enabled via click, passive by default)
+            // We enable autoRotate for visual effect, user interaction pauses it or overrides it
+            productControls = new OrbitControls(productCamera, productRenderer.domElement);
+            productControls.enableDamping = true;
+            productControls.dampingFactor = 0.1;
+            productControls.enableZoom = false;
+            productControls.enablePan = false;
+            productControls.autoRotate = true;
+            productControls.autoRotateSpeed = 3.0;
+
             const loader = new GLTFLoader();
-            // Путь к файлу 1.glb. Убедитесь, что он лежит рядом с index.html
             loader.load('1.glb', (gltf) => {
                 productModel = gltf.scene;
-                
-                // Авто-масштабирование и центрирование
                 const box = new THREE.Box3().setFromObject(productModel);
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 1.2 / maxDim; // Подгоняем под размер сцены
-                
+                const scale = 1.2 / maxDim; 
                 productModel.scale.set(scale, scale, scale);
-                productModel.position.sub(center.multiplyScalar(scale)); // Центрируем
-                
+                productModel.position.sub(center.multiplyScalar(scale));
                 productScene.add(productModel);
             }, undefined, (error) => {
-                console.error('Ошибка загрузки 1.glb:', error);
-                // Можно вывести + на ошибку, если модель не загрузилась
+                console.error('Error loading 1.glb in card:', error);
                 productContainer.innerHTML = '<span class="card-cross">+</span>';
             });
         }
 
-        // Инициализация мини-сцены
+        // Initialize Large Product Scene (for Modal)
+        function initLargeProductScene() {
+            if (!largeProductContainer) return;
+            
+            // Clear previous if any
+            largeProductContainer.innerHTML = '';
+
+            largeProductScene = new THREE.Scene();
+            const aspect = largeProductContainer.clientWidth / largeProductContainer.clientHeight;
+            largeProductCamera = new THREE.PerspectiveCamera(40, aspect, 0.1, 100);
+            largeProductCamera.position.set(0, 0.5, 3.5);
+
+            largeProductRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            largeProductRenderer.setSize(largeProductContainer.clientWidth, largeProductContainer.clientHeight);
+            largeProductRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            largeProductContainer.appendChild(largeProductRenderer.domElement);
+
+            // Better lighting for large view
+            const lLight1 = new THREE.DirectionalLight(0xffffff, 2);
+            lLight1.position.set(5, 5, 5);
+            largeProductScene.add(lLight1);
+            const lLight2 = new THREE.DirectionalLight(0x00ccaa, 1);
+            lLight2.position.set(-5, 2, -2);
+            largeProductScene.add(lLight2);
+            largeProductScene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+            largeProductControls = new OrbitControls(largeProductCamera, largeProductRenderer.domElement);
+            largeProductControls.enableDamping = true;
+            largeProductControls.dampingFactor = 0.05;
+            largeProductControls.enableZoom = true;
+            largeProductControls.enablePan = false;
+
+            const loader = new GLTFLoader();
+            loader.load('1.glb', (gltf) => {
+                largeProductModel = gltf.scene;
+                const box = new THREE.Box3().setFromObject(largeProductModel);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 1.8 / maxDim; // Slightly larger for detail
+                largeProductModel.scale.set(scale, scale, scale);
+                largeProductModel.position.sub(center.multiplyScalar(scale));
+                
+                // Lift slightly so it doesn't clip if centered at 0
+                largeProductModel.position.y += (size.y * scale / 2) - 0.2;
+                
+                largeProductScene.add(largeProductModel);
+            }, undefined, (error) => {
+                console.error('Error loading 1.glb in modal:', error);
+                largeProductContainer.innerHTML = '<div style="color:white; padding:20px;">Error loading 3D Model</div>';
+            });
+        }
+
+        function disposeLargeScene() {
+            if (largeProductRenderer) {
+                largeProductRenderer.dispose();
+                largeProductRenderer.forceContextLoss();
+                largeProductRenderer.domElement.remove();
+                largeProductRenderer = null;
+            }
+            if (largeProductScene) {
+                // Simple cleanup, ideally traverse geometries/materials
+                largeProductScene = null;
+            }
+            largeProductModel = null;
+            largeProductControls = null;
+            largeProductCamera = null;
+        }
+
+        // Modal Handlers
+        function openProductModal() {
+            document.getElementById('productModal').classList.add('open');
+            // Initialize large 3D scene only when opened to save resources
+            initLargeProductScene();
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('open');
+            disposeLargeScene();
+        }
+
+        document.getElementById('productModalCloseBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeProductModal();
+        });
+
+        // Event Listeners for Cards
+        document.getElementById('card-1').addEventListener('click', (e) => {
+            e.stopPropagation();
+            openProductModal();
+        });
+
         initProductCard3D();
 
         let lastTime = performance.now();
@@ -668,11 +850,19 @@
             updateSpeed(); updatePhysics(dt); animateSpheres(dt); updateOrbitParticles(); animateTrails();
             controls.update(); animTime += dt; stars.rotation.y += 0.0001;
             
-            // Анимация модели продукта
-            if (productModel && productRenderer && productScene && productCamera) {
-                productModel.rotation.y += dt * 0.5; // Вращение
-                productModel.rotation.x = Math.sin(now * 0.001) * 0.1; // Легкое покачивание
+            // Small Card Render
+            if (productRenderer && productScene && productCamera) {
+                if (productModel) {
+                   // Auto rotation handled by OrbitControls autoRotate
+                   productControls.update();
+                }
                 productRenderer.render(productScene, productCamera);
+            }
+
+            // Large Modal Render
+            if (largeProductRenderer && largeProductScene && largeProductCamera && largeProductModel) {
+                largeProductControls.update();
+                largeProductRenderer.render(largeProductScene, largeProductCamera);
             }
 
             if (useComposer && effectComposer) {
@@ -698,13 +888,22 @@
             renderer.setSize(window.innerWidth, window.innerHeight); 
             if (useComposer && effectComposer) effectComposer.setSize(window.innerWidth, window.innerHeight); 
             
-            // Обновляем мини-рендерер
+            // Resize Small Renderer
             if (productRenderer && productCamera && productContainer) {
                 const width = productContainer.clientWidth;
                 const height = productContainer.clientHeight;
                 productCamera.aspect = width / height;
                 productCamera.updateProjectionMatrix();
                 productRenderer.setSize(width, height);
+            }
+
+            // Resize Large Renderer if modal is open
+            if (largeProductRenderer && largeProductCamera && largeProductContainer) {
+                const width = largeProductContainer.clientWidth;
+                const height = largeProductContainer.clientHeight;
+                largeProductCamera.aspect = width / height;
+                largeProductCamera.updateProjectionMatrix();
+                largeProductRenderer.setSize(width, height);
             }
         });
     </script>
