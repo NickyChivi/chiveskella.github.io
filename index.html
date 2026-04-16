@@ -82,9 +82,28 @@
         .coming-wrap { position: relative; z-index: 1; text-align: center; padding: 0 16px; width: 100%; max-width: 520px; }
         .coming-title { font-family: 'Courier New', monospace; font-size: clamp(0.9rem, 3.5vw, 1.6rem); color: #00ccaa; text-shadow: 0 0 14px #00ffcc, 0 0 28px #00aa88; letter-spacing: clamp(3px, 1.2vw, 8px); margin-bottom: 24px; }
         .cards-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .product-card { flex: 0 0 clamp(90px, 28vw, 150px); background: rgba(0,15,15,0.5); border: 1px solid #1a3333; border-radius: 6px; overflow: hidden; transition: border-color 0.3s; }
+        .product-card { flex: 0 0 clamp(90px, 28vw, 150px); background: rgba(0,15,15,0.5); border: 1px solid #1a3333; border-radius: 6px; overflow: hidden; transition: border-color 0.3s; display: flex; flex-direction: column; }
         .product-card:hover { border-color: #00aa88; }
-        .card-img-placeholder { width: 100%; aspect-ratio: 1; background: rgba(0,10,10,0.6); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #1a3333; }
+        .card-img-placeholder { 
+            width: 100%; 
+            aspect-ratio: 1; 
+            background: rgba(0,10,10,0.6); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-bottom: 1px solid #1a3333; 
+            position: relative;
+            overflow: hidden;
+        }
+        /* Контейнер для 3D модели внутри карточки */
+        #glb-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+        }
         .card-cross { font-size: clamp(1rem, 4vw, 1.6rem); color: #1a3333; line-height: 1; }
         .card-info { padding: 8px 6px; }
         .card-dash { height: 1px; background: #1a3333; margin-bottom: 5px; border-radius: 1px; }
@@ -196,14 +215,25 @@
         <div class="coming-wrap">
             <div class="coming-title">COMING SOON</div>
             <div class="cards-row">
+                <!-- ПЕРВАЯ КАРТОЧКА: ТУТ БУДЕТ МОДЕЛЬ -->
+                <div class="product-card">
+                    <div class="card-img-placeholder">
+                        <div id="glb-container"></div>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-dash"></div>
+                        <div class="card-dash"></div>
+                        <div class="card-dash"></div>
+                    </div>
+                </div>
+                
+                <!-- ВТОРАЯ КАРТОЧКА -->
                 <div class="product-card">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
                     <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
                 </div>
-                <div class="product-card">
-                    <div class="card-img-placeholder"><span class="card-cross">+</span></div>
-                    <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
-                </div>
+                
+                <!-- ТРЕТЬЯ КАРТОЧКА -->
                 <div class="product-card">
                     <div class="card-img-placeholder"><span class="card-cross">+</span></div>
                     <div class="card-info"><div class="card-dash"></div><div class="card-dash"></div><div class="card-dash"></div></div>
@@ -253,6 +283,7 @@
         import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'; // Импортируем загрузчик GLB
 
         const letterDefs = {
             'C': { w: 6, lines: [' █████', ' ██   ', ' ██   ', ' ██   ', ' █████'] },
@@ -325,7 +356,6 @@
             document.getElementById('fullClass').innerHTML = data.classType; 
             document.getElementById('fullYear').innerHTML = data.year; 
             const compEl = document.getElementById('fullComposition'); 
-            // Проверяем, является ли composition уже готовым HTML (как у Maybe Therapy?)
             if (data.composition.startsWith('http')) {
                 compEl.innerHTML = '<a class="info-link" href="' + data.composition + '" target="_blank" rel="noopener noreferrer">' + data.composition + '</a>';
             } else {
@@ -407,6 +437,7 @@
         }
         setTimeout(() => animateLogoAssembly(), 300);
 
+        // --- MAIN SCENE SETUP ---
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000); scene.fog = new THREE.FogExp2(0x000000, 0.006);
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const camera = new THREE.PerspectiveCamera(isMobile ? 55 : 42, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -569,12 +600,81 @@
             const gp = 0.25 + Math.sin(animTime * 0.8) * 0.05; gridHelper.material.opacity = gp; fineGrid.material.opacity = gp * 0.5;
         }
 
+        // --- PRODUCT CARD GLB LOGIC ---
+        let productModel = null;
+        let productRenderer = null;
+        let productScene = null;
+        let productCamera = null;
+        let productContainer = document.getElementById('glb-container');
+
+        function initProductCard3D() {
+            if (!productContainer) return;
+
+            // Сцена для продукта
+            productScene = new THREE.Scene();
+            
+            // Камера
+            const aspect = productContainer.clientWidth / productContainer.clientHeight;
+            productCamera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
+            productCamera.position.set(0, 0, 2.5);
+
+            // Рендерер (прозрачный фон)
+            productRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            productRenderer.setSize(productContainer.clientWidth, productContainer.clientHeight);
+            productRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            productContainer.appendChild(productRenderer.domElement);
+
+            // Освещение для продукта
+            const pLight1 = new THREE.DirectionalLight(0xffffff, 1);
+            pLight1.position.set(2, 2, 5);
+            productScene.add(pLight1);
+            
+            const pLight2 = new THREE.DirectionalLight(0x00ccaa, 0.5); // Слегка подсвечиваем цветом бренда
+            pLight2.position.set(-2, 1, 3);
+            productScene.add(pLight2);
+            
+            productScene.add(new THREE.AmbientLight(0x404040, 1.5));
+
+            // Загрузка модели
+            const loader = new GLTFLoader();
+            // Путь к файлу 1.glb. Убедитесь, что он лежит рядом с index.html
+            loader.load('1.glb', (gltf) => {
+                productModel = gltf.scene;
+                
+                // Авто-масштабирование и центрирование
+                const box = new THREE.Box3().setFromObject(productModel);
+                const center = box.getCenter(new THREE.Vector3());
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 1.2 / maxDim; // Подгоняем под размер сцены
+                
+                productModel.scale.set(scale, scale, scale);
+                productModel.position.sub(center.multiplyScalar(scale)); // Центрируем
+                
+                productScene.add(productModel);
+            }, undefined, (error) => {
+                console.error('Ошибка загрузки 1.glb:', error);
+                // Можно вывести + на ошибку, если модель не загрузилась
+                productContainer.innerHTML = '<span class="card-cross">+</span>';
+            });
+        }
+
+        // Инициализация мини-сцены
+        initProductCard3D();
+
         let lastTime = performance.now();
         function loop() {
             const now = performance.now(), dt = Math.min(0.033, (now - lastTime) / 1000); lastTime = now;
             updateSpeed(); updatePhysics(dt); animateSpheres(dt); updateOrbitParticles(); animateTrails();
             controls.update(); animTime += dt; stars.rotation.y += 0.0001;
             
+            // Анимация модели продукта
+            if (productModel && productRenderer && productScene && productCamera) {
+                productModel.rotation.y += dt * 0.5; // Вращение
+                productModel.rotation.x = Math.sin(now * 0.001) * 0.1; // Легкое покачивание
+                productRenderer.render(productScene, productCamera);
+            }
+
             if (useComposer && effectComposer) {
                 try {
                     effectComposer.render();
@@ -597,6 +697,15 @@
             camera.updateProjectionMatrix(); 
             renderer.setSize(window.innerWidth, window.innerHeight); 
             if (useComposer && effectComposer) effectComposer.setSize(window.innerWidth, window.innerHeight); 
+            
+            // Обновляем мини-рендерер
+            if (productRenderer && productCamera && productContainer) {
+                const width = productContainer.clientWidth;
+                const height = productContainer.clientHeight;
+                productCamera.aspect = width / height;
+                productCamera.updateProjectionMatrix();
+                productRenderer.setSize(width, height);
+            }
         });
     </script>
 </body>
