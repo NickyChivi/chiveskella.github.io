@@ -404,8 +404,8 @@
             { name: "K16CH1", composition: "https://www.k16ch1.com", year: "2024 \u2014 ongoing", classType: "Brand Designer", history: "An ongoing creative direction for the womenswear fashion brand K16CH1, which is presented at the Balcony Paris, Imply Hongkong, Studio 183 Berlin, Forumist Stockholm, Deli'cs Singapore." },
             { name: "TVOE", composition: "Web and Stores", year: "2022 \u2014 2024", classType: "Graphic Designer", history: "A graphic design curation for a fashion retailer TVOE, including web graphics and retail stores decoration." },
             { name: "MASTERS PLAN", composition: "Urban planning", year: "2017 \u2014 2021", classType: "Architect", history: "An architecture practice as an urban planner on multiple projects, including work with the Kengo Kuma architects on a housing project." },
-            { name: "YANDEX", composition: "https://www.facebook.com/wearemagiccamp/videos/привет-ребята-придумали-эксперимент-возможно-штука-классно-работает-такие-слова-/875126296800474/", year: "2022", classType: "Collection", history: "A conceptual collection for Yandex corporation, made with creative agency Wearemagiccamp, exploring gamification of the clothing through interactive interchangable elements with linguistic program called 'Lemmas'." },
-            { name: "Maybe Therapy?", composition: '<a class="info-link" href="https://iskusstvo-info.ru/maybe-therapy-albiny-mohryakovoj/" target="_blank" rel="noopener noreferrer">iskusstvo-info.ru</a><br><a class="info-link" href="https://vladey.net/ru/artwork/7015" target="_blank" rel="noopener noreferrer">vladey.net</a><br><a class="info-link" href="https://vk.com/wall-92656044_1387" target="_blank" rel="noopener noreferrer">vk.com</a>', year: "2020", classType: "Collection", history: "A multidisciplinary art project by artist Albina Mohryakova, exploring ritualistic approach to psychological therapy, artist Stas Falkov made the inspired graphic design, which I translated into a thematic garment collection." }
+            { name: "YANDEX", composition: "https://www.facebook.com/wearemagiccamp/videos/привет-ребята-придумали-эксперимент-возможно-штука-классно-работает-такие-слова-/875126296800474/", year: "2022", classType: "Collection", history: "A conceptual collection for Yandex corporation, made with creative agency Wearemagiccamp, exploring gamification of clothing through interactive interchangable elements with linguistic program called 'Lemmas'." },
+            { name: "Maybe Therapy?", composition: '<a class="info-link" href="https://iskusstvo-info.ru/maybe-therapy-albiny-mohryakovoj/" target="_blank" rel="noopener noreferrer">iskusstvo-info.ru</a><br><a class="info-link" href="https://vladey.net/ru/artwork/7015" target="_blank" rel="noopener noreferrer">vladey.net</a><br><a class="info-link" href="https://vk.com/wall-92656044_1387" target="_blank" rel="noopener noreferrer">vk.com</a>', year: "2020", classType: "Collection", history: "A multidisciplinary art project by the artist Albina Mohryakova, exploring ritualistic approach to psychological therapy, artist Stas Falkov made the inspired graphic design, which I translated into a thematic garment collection." }
         ];
         
         const glowColors = ['#00ffcc', '#00ccaa', '#00aa88', '#00ffaa', '#00cc99', '#00aa77', '#00ffbb', '#00cc88', '#00aa66', '#00ff99', '#00cc77', '#00eebb', '#00ddaa'];
@@ -529,7 +529,7 @@
         const scene = new THREE.Scene(); scene.background = new THREE.Color(0x000000); scene.fog = new THREE.FogExp2(0x000000, 0.006);
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const camera = new THREE.PerspectiveCamera(isMobile ? 55 : 42, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, isMobile ? 0.9 :1.2, isMobile ? 5.5 : 4.8);
+        camera.position.set(0, isMobile ? 0.9 : 1.2, isMobile ? 5.5 : 4.8);
         const renderer = new THREE.WebGLRenderer({ antialias: !isMobile });
         renderer.setSize(window.innerWidth, window.innerHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         sceneCont.appendChild(renderer.domElement);
@@ -592,7 +592,7 @@
         scene.add(orbParticlesMesh);
 
         function updateOrbitParticles() { 
-            const dim =1 - scrollFade * scrollFade;
+            const dim = 1 - scrollFade * scrollFade;
             const posArr = orbParticlesMesh.geometry.attributes.position.array;
             let idx = 0;
             smallSpheres.forEach(sphere => {
@@ -693,7 +693,7 @@
         // Product Data
         const products = [
             { id: 'card-1', containerId: 'glb-container-1', model: '1.glb', title: 'Sculpted Shearling Jacket', desc: 'Price: 80 USDT<br>Limited Edition / Handcrafted' },
-            { id: 'card-2', containerId: 'glb-container-2', model: '2.glb', title: 'Skeleton Suit Jacket', desc: 'Price: 220 USDT<br>Upcycled product<br>DM to purchase' }
+            { id: 'card-2', containerId: 'glb-container-2', model: '2.glb', title: 'Skeleton Suit Jacket', desc: 'Price: 220 USDT<br>Upcycled product' }
         ];
 
         // Array to hold small scene objects
@@ -739,7 +739,7 @@
                 const center = box.getCenter(new THREE.Vector3());
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale =1.2 / maxDim; 
+                const scale = 1.2 / maxDim; 
                 model.scale.set(scale, scale, scale);
                 model.position.sub(center.multiplyScalar(scale));
                 scene.add(model);
@@ -761,12 +761,12 @@
         let largeProductCamera = null;
         let largeProductControls = null;
         let largeProductModel = null;
+        let largeProductGroup = null; // NEW: Group for wrapping
         let largeProductContainer = document.getElementById('largeProductCanvas');
 
         function disposeLargeScene() {
             if (largeProductRenderer) {
                 largeProductRenderer.dispose();
-                // REMOVED: largeProductRenderer.forceContextLoss(); 
                 largeProductRenderer.domElement.remove();
                 largeProductRenderer = null;
             }
@@ -774,22 +774,19 @@
                 largeProductScene = null;
             }
             largeProductModel = null;
+            largeProductGroup = null;
             largeProductControls = null;
             largeProductCamera = null;
         }
 
         function openProductModal(productData) {
-            // Safety check: Prevent opening if already open
-            if (document.getElementById('productModal').classList.contains('open')) return;
-
             // Update Text
             document.getElementById('modalProductTitle').textContent = productData.title;
             document.getElementById('modalProductDesc').innerHTML = productData.desc;
 
-            // Open modal visual
             document.getElementById('productModal').classList.add('open');
             
-            // Initialize Large Scene with a delay to prevent UI freeze
+            // Initialize Large Scene with delay
             setTimeout(() => {
                 disposeLargeScene();
                 
@@ -819,26 +816,35 @@
                 largeProductControls.dampingFactor = 0.05;
                 largeProductControls.enableZoom = true;
                 largeProductControls.enablePan = false;
+                // IMPORTANT: Set target to 0,0,0 so camera spins around the group origin
+                largeProductControls.target.set(0, 0, 0);
 
                 const loader = new GLTFLoader();
                 loader.load(productData.model, (gltf) => {
                     largeProductModel = gltf.scene;
+                    
+                    // GROUP WRAPPER TECHNIQUE
+                    largeProductGroup = new THREE.Group();
+                    largeProductScene.add(largeProductGroup); // Group at (0,0,0) in world
+                    largeProductGroup.add(largeProductModel); // Model inside group
+
                     const box = new THREE.Box3().setFromObject(largeProductModel);
                     const center = box.getCenter(new THREE.Vector3());
                     const size = box.getSize(new THREE.Vector3());
                     const maxDim = Math.max(size.x, size.y, size.z);
                     const scale = 1.8 / maxDim; 
                     largeProductModel.scale.set(scale, scale, scale);
+                    
+                    // Move the model inside the group so its geometric center is at the group's origin (0,0,0)
                     largeProductModel.position.sub(center.multiplyScalar(scale));
                     
-                    largeProductModel.position.y += (size.y * scale / 2) - 0.2;
-                    
-                    largeProductScene.add(largeProductModel);
+                    // No manual Y adjustment needed. The model is centered at (0,0,0) world space.
+
                 }, undefined, (error) => {
                     console.error(`Error loading ${productData.model} in modal:`, error);
                     largeProductContainer.innerHTML = '<div style="color:white; padding:20px;">Error loading 3D Model</div>';
                 });
-            }, 50); // 50ms delay to let UI update
+            }, 50); // Delay to prevent UI freeze
         }
 
         function closeProductModal() {
@@ -881,8 +887,10 @@
             });
 
             // Render Large Modal
-            if (largeProductRenderer && largeProductScene && largeProductCamera && largeProductModel) {
+            if (largeProductRenderer && largeProductScene && largeProductCamera) {
                 largeProductControls.update();
+                // We render the scene which contains the group. 
+                // The group is at (0,0,0). The model is inside, centered.
                 largeProductRenderer.render(largeProductScene, largeProductCamera);
             }
 
