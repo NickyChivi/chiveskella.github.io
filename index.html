@@ -4,27 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>CHIVESKELLA MIND | GOLD EDITION</title>
+    <title>CHIVESKELLA MIND | ICE EDITION</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { overflow: hidden; font-family: 'Courier New', 'Fira Code', monospace; background-color: #000; touch-action: none; }
+        body { overflow: hidden; font-family: 'Courier New', 'Fira Code', monospace; background-color: #020b18; touch-action: none; }
 
-        .glitch-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-out, visibility 1s ease-out; }
+        .glitch-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020b18; z-index: 1000; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-out, visibility 1s ease-out; }
         .glitch-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-        .ascii-logo { font-family: 'Courier New', monospace; font-size: clamp(8px, 2.5vw, 12px); line-height: 1.2; color: #d4af37; text-align: center; white-space: pre; text-shadow: 0 0 8px #d4af37; letter-spacing: 1px; transform: scale(0.67); }
+        .ascii-logo { font-family: 'Courier New', monospace; font-size: clamp(8px, 2.5vw, 12px); line-height: 1.2; color: #cfeeff; text-align: center; white-space: pre; text-shadow: 0 0 8px #6fc6ff; letter-spacing: 1px; transform: scale(0.67); }
 
         .logo-header { position: fixed; top: max(10px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 100; pointer-events: auto; cursor: pointer; opacity: 0; visibility: hidden; transition: opacity 0.6s ease 0.2s, visibility 0.6s ease 0.2s; width: max-content; max-width: calc(100vw - 80px); overflow: hidden; }
         .logo-header.visible { opacity: 1; visibility: visible; }
-        .header-ascii { font-family: 'Courier New', monospace; font-size: clamp(2.5px, 1vw, 5px); line-height: 1.15; color: #d4af37; text-shadow: 0 0 5px #b8860b; white-space: pre; margin: 0; display: inline-block; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); padding: 4px 8px; border-left: 2px solid #d4af37; border-right: 2px solid #d4af37; transition: all 0.2s ease; }
-        .logo-header:hover .header-ascii { text-shadow: 0 0 10px #ffd700, 0 0 5px #b8860b; background: rgba(15,12,1,0.9); }
+        .header-ascii { font-family: 'Courier New', monospace; font-size: clamp(2.5px, 1vw, 5px); line-height: 1.15; color: #cfeeff; text-shadow: 0 0 5px #2f9be0; white-space: pre; margin: 0; display: inline-block; background: rgba(4,14,30,0.8); backdrop-filter: blur(6px); padding: 4px 8px; border-left: 2px solid #8fd8ff; border-right: 2px solid #8fd8ff; transition: all 0.2s ease; }
+        .logo-header:hover .header-ascii { text-shadow: 0 0 10px #eef9ff, 0 0 5px #2f9be0; background: rgba(8,26,50,0.92); }
 
-        .nav-item { position: fixed; font-family: 'Courier New', monospace; font-size: clamp(0.5rem, 2.5vw, 0.75rem); letter-spacing: 1px; color: #cccccc; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); padding: 5px 10px; cursor: pointer; transition: all 0.2s ease; z-index: 100; pointer-events: auto; border: 1px solid #d4af37; border-radius: 4px; opacity: 0; }
+        /* ===== HoMM3-STYLE EDGE BUTTONS ===== */
+        .nav-item { position: fixed; font-family: 'Courier New', monospace; font-size: clamp(0.55rem, 2.4vw, 0.72rem); font-weight: bold; letter-spacing: 2px; color: #eef9ff; background: linear-gradient(180deg, #173f66 0%, #0a2138 55%, #0e2f52 100%); padding: 6px 18px; cursor: pointer; transition: all 0.2s ease; z-index: 100; pointer-events: auto; border: 1px solid #7fc4f0; border-radius: 2px; opacity: 0; box-shadow: inset 0 0 0 1px #05131f, inset 0 0 0 2px rgba(63,127,181,0.85), inset 0 2px 0 rgba(190,235,255,0.3), inset 0 -3px 6px rgba(2,12,28,0.9), 0 0 12px rgba(111,198,255,0.22); }
         .nav-item.visible { opacity: 1; }
-        .nav-item:active { opacity: 0.7; transform: scale(0.96); }
+        .nav-item:hover { color: #ffffff; border-color: #cfeeff; text-shadow: 0 0 8px #bfe9ff; box-shadow: inset 0 0 0 1px #05131f, inset 0 0 0 2px rgba(120,180,225,0.95), inset 0 2px 0 rgba(220,245,255,0.4), inset 0 -3px 6px rgba(2,12,28,0.9), 0 0 18px rgba(170,225,255,0.5); }
+        .nav-item:active { opacity: 0.85; transform: scale(0.96); }
+        .nav-item::before, .nav-item::after { content: '\25C6'; position: absolute; top: 50%; transform: translateY(-50%); font-size: 0.55em; color: #9fdcff; text-shadow: 0 0 6px #6fc6ff; pointer-events: none; }
+        .nav-item::before { left: 6px; }
+        .nav-item::after { right: 6px; }
         .nav-menu { top: max(15px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); }
         .nav-contact { bottom: max(15px, env(safe-area-inset-bottom)); right: max(8px, env(safe-area-inset-right)); }
         .nav-about { bottom: max(15px, env(safe-area-inset-bottom)); left: max(8px, env(safe-area-inset-left)); }
 
+        /* ===== HoMM3-STYLE CONTROL PANEL ===== */
         .ctrl-panel {
             position: fixed;
             top: max(52px, calc(env(safe-area-inset-top) + 42px));
@@ -38,15 +44,15 @@
             pointer-events: none;
         }
         .ctrl-panel.visible { opacity: 1; pointer-events: auto; }
-        .ctrl-row { display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); padding: 4px 8px; border-radius: 4px; border-left: 2px solid #d4af37; }
-        .ctrl-label { font-family: 'Courier New', monospace; font-size: clamp(0.5rem, 2vw, 0.6rem); color: #b8860b; white-space: nowrap; user-select: none; letter-spacing: 0.5px; }
-        .ctrl-val { font-family: 'Courier New', monospace; font-size: clamp(0.55rem, 2.2vw, 0.7rem); font-weight: bold; color: #ffd700; min-width: 22px; text-align: right; }
-        .ctrl-slider { width: 60px; height: 3px; -webkit-appearance: none; appearance: none; background: #3a2e05; border-radius: 2px; outline: none; cursor: pointer; transition: opacity 0.2s; }
-        .ctrl-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: #d4af37; cursor: pointer; border: none; box-shadow: 0 0 4px #d4af37; }
-        .ctrl-slider::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; background: #d4af37; cursor: pointer; border: none; box-shadow: 0 0 4px #d4af37; }
-        .ctrl-icon { font-size: 0.9rem; color: #d4af37; text-shadow: 0 0 4px #b8860b; cursor: pointer; transition: color 0.2s, text-shadow 0.2s; user-select: none; line-height: 1; flex-shrink: 0; }
-        .ctrl-icon:hover { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
-        .ctrl-row.muted .ctrl-icon { color: #5c4a1a; text-shadow: none; }
+        .ctrl-row { display: flex; align-items: center; gap: 6px; background: linear-gradient(180deg, #0c2440, #081a30); padding: 4px 9px; border-radius: 2px; border: 1px solid #2a6a9e; box-shadow: inset 0 1px 0 rgba(190,235,255,0.18), inset 0 -1px 3px rgba(2,10,24,0.8); }
+        .ctrl-label { font-family: 'Courier New', monospace; font-size: clamp(0.5rem, 2vw, 0.6rem); color: #6fc6ff; white-space: nowrap; user-select: none; letter-spacing: 0.5px; }
+        .ctrl-val { font-family: 'Courier New', monospace; font-size: clamp(0.55rem, 2.2vw, 0.7rem); font-weight: bold; color: #eef9ff; min-width: 22px; text-align: right; }
+        .ctrl-slider { width: 60px; height: 3px; -webkit-appearance: none; appearance: none; background: #0e2f4c; border-radius: 2px; outline: none; cursor: pointer; transition: opacity 0.2s; }
+        .ctrl-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: #9fdcff; cursor: pointer; border: none; box-shadow: 0 0 5px #6fc6ff; }
+        .ctrl-slider::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; background: #9fdcff; cursor: pointer; border: none; box-shadow: 0 0 5px #6fc6ff; }
+        .ctrl-icon { font-size: 0.9rem; color: #8fd8ff; text-shadow: 0 0 4px #2f9be0; cursor: pointer; transition: color 0.2s, text-shadow 0.2s; user-select: none; line-height: 1; flex-shrink: 0; }
+        .ctrl-icon:hover { color: #eef9ff; text-shadow: 0 0 8px #eef9ff; }
+        .ctrl-row.muted .ctrl-icon { color: #1e4a70; text-shadow: none; }
 
         .scroll-arrow {
             position: fixed;
@@ -57,7 +63,7 @@
             cursor: pointer;
             text-align: center;
             font-family: 'Courier New', monospace;
-            color: #d4af37;
+            color: #8fd8ff;
             white-space: pre;
             pointer-events: auto;
             animation: arrowPulse 2.2s ease-in-out infinite;
@@ -66,8 +72,8 @@
         .scroll-arrow .arrow-shape { font-size: clamp(0.55rem, 2.2vw, 0.75rem); letter-spacing: 0.3em; }
         .scroll-arrow .arrow-text { font-size: clamp(0.45rem, 1.8vw, 0.55rem); letter-spacing: 2px; margin-top: 2px; }
         @keyframes arrowPulse {
-            0%, 100% { opacity: 0.2; text-shadow: 0 0 2px #2a2003; }
-            50% { opacity: 0.9; text-shadow: 0 0 8px #ffd700, 0 0 16px #b8860b; }
+            0%, 100% { opacity: 0.2; text-shadow: 0 0 2px #0a2440; }
+            50% { opacity: 0.9; text-shadow: 0 0 8px #eef9ff, 0 0 16px #2f9be0; }
         }
         @media (max-width: 768px) {
             .scroll-arrow .arrow-shape { font-size: clamp(1rem, 4.4vw, 1.5rem); letter-spacing: 0.4em; }
@@ -77,14 +83,14 @@
 
         #scrollSection { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
         #scrollSection.visible { opacity: 1; pointer-events: auto; }
-        .scroll-gradient { position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.9) 50%, #000 100%); }
+        .scroll-gradient { position: absolute; top: 0; left: 0; right: 0; height: 40%; background: linear-gradient(to bottom, transparent 0%, rgba(2,11,24,0.9) 50%, #020b18 100%); }
         .coming-wrap { position: relative; z-index: 1; text-align: center; padding: 0 16px; width: 100%; max-width: 520px; }
-        .coming-title { font-family: 'Courier New', monospace; font-size: clamp(0.9rem, 3.5vw, 1.6rem); color: #d4af37; text-shadow: 0 0 14px #ffd700, 0 0 28px #b8860b; letter-spacing: clamp(3px, 1.2vw, 8px); margin-bottom: 24px; }
+        .coming-title { font-family: 'Courier New', monospace; font-size: clamp(0.9rem, 3.5vw, 1.6rem); color: #eef9ff; text-shadow: 0 0 14px #bfe9ff, 0 0 28px #2f9be0; letter-spacing: clamp(3px, 1.2vw, 8px); margin-bottom: 24px; }
         .cards-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         .product-card {
             flex: 0 0 clamp(90px, 28vw, 150px);
-            background: rgba(26,22,1,0.5);
-            border: 1px solid #3a2e05;
+            background: rgba(8,26,50,0.5);
+            border: 1px solid #14406b;
             border-radius: 6px;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -92,16 +98,16 @@
             flex-direction: column;
             cursor: pointer;
         }
-        .product-card:hover { border-color: #b8860b; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(212,175,55,0.1); }
+        .product-card:hover { border-color: #8fd8ff; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(111,198,255,0.1); }
         .product-card:active { transform: scale(0.97); }
         .card-img-placeholder {
             width: 100%;
             aspect-ratio: 1;
-            background: rgba(20,16,1,0.6);
+            background: rgba(6,20,40,0.6);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-bottom: 1px solid #3a2e05;
+            border-bottom: 1px solid #14406b;
             position: relative;
             overflow: hidden;
             touch-action: none;
@@ -114,33 +120,33 @@
             left: 0;
             display: block;
         }
-        .card-cross { font-size: clamp(1rem, 4vw, 1.6rem); color: #3a2e05; line-height: 1; }
+        .card-cross { font-size: clamp(1rem, 4vw, 1.6rem); color: #1b5f94; line-height: 1; }
 
         .card-info { padding: 8px 6px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .card-text { font-size: clamp(0.45rem, 1.8vw, 0.55rem); color: #cccccc; line-height: 1.3; text-align: left; margin-bottom: 2px; }
-        .card-price { font-size: clamp(0.5rem, 2vw, 0.65rem); color: #ffd700; font-weight: bold; line-height: 1.2; }
-        .card-subtext { font-size: 0.7em; font-weight: normal; color: #888; display: block; }
+        .card-text { font-size: clamp(0.45rem, 1.8vw, 0.55rem); color: #d6ecff; line-height: 1.3; text-align: left; margin-bottom: 2px; }
+        .card-price { font-size: clamp(0.5rem, 2vw, 0.65rem); color: #eef9ff; font-weight: bold; line-height: 1.2; }
+        .card-subtext { font-size: 0.7em; font-weight: normal; color: #7fa6c9; display: block; }
 
-        .card-dash { height: 1px; background: #3a2e05; margin-bottom: 5px; border-radius: 1px; }
+        .card-dash { height: 1px; background: #14406b; margin-bottom: 5px; border-radius: 1px; }
         .card-dash:nth-child(1) { width: 60%; }
         .card-dash:nth-child(2) { width: 80%; }
         .card-dash:nth-child(3) { width: 45%; }
-        .coming-footer { margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.45rem; color: #3a2e05; letter-spacing: 4px; }
+        .coming-footer { margin-top: 20px; font-family: 'Courier New', monospace; font-size: 0.45rem; color: #1b4a75; letter-spacing: 4px; }
 
         #scrollSection.visible .product-card {
-            box-shadow: 0 0 14px rgba(212,175,55,0.18), 0 0 4px rgba(212,175,55,0.1);
-            border-color: rgba(212,175,55,0.4);
+            box-shadow: 0 0 14px rgba(111,198,255,0.18), 0 0 4px rgba(111,198,255,0.1);
+            border-color: rgba(111,198,255,0.4);
         }
         #scrollSection.visible .product-card:hover,
         #scrollSection.visible .product-card:active {
-            box-shadow: 0 0 22px rgba(212,175,55,0.35), 0 0 8px rgba(212,175,55,0.18);
-            border-color: #d4af37;
+            box-shadow: 0 0 22px rgba(111,198,255,0.35), 0 0 8px rgba(111,198,255,0.18);
+            border-color: #8fd8ff;
         }
         #scrollSection.visible .card-img-placeholder {
-            background: rgba(26,22,1,0.88);
+            background: rgba(7,24,46,0.88);
         }
         #scrollSection.visible .card-text {
-            color: #e0d8c0;
+            color: #e4f4ff;
         }
 
         #sceneContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; transition: transform 0.5s ease-out; will-change: transform; }
@@ -148,40 +154,47 @@
 
         .info { position: fixed; bottom: max(15px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); text-align: center; pointer-events: none; z-index: 10; padding: 0 8px; opacity: 0; white-space: nowrap; }
         .info.visible { opacity: 1; }
-        .controls-hint { background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: inline-block; padding: 5px 10px; font-size: clamp(0.5rem, 2.2vw, 0.65rem); border: 1px solid #d4af37; font-family: 'Courier New', monospace; color: #ccccaa; border-radius: 20px; }
-        .controls-hint kbd { background: #1a1a1a; border-radius: 3px; padding: 2px 5px; margin: 0 2px; color: #ffd700; border: 1px solid #d4af37; }
+        .controls-hint { background: rgba(3,14,30,0.8); backdrop-filter: blur(8px); display: inline-block; padding: 5px 10px; font-size: clamp(0.5rem, 2.2vw, 0.65rem); border: 1px solid #7fc4f0; font-family: 'Courier New', monospace; color: #cfe8ff; border-radius: 20px; }
+        .controls-hint kbd { background: #0a2138; border-radius: 3px; padding: 2px 5px; margin: 0 2px; color: #eef9ff; border: 1px solid #7fc4f0; }
         .fade-out { animation: fadeOutMsg 1.5s forwards; }
         @keyframes fadeOutMsg { 0% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
 
-        .satellite-tooltip { position: fixed; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); border-left: 2px solid #d4af37; font-family: 'Courier New', monospace; color: #cccccc; padding: 5px 8px; font-size: clamp(0.5rem, 2.2vw, 0.65rem); z-index: 200; pointer-events: none; white-space: nowrap; border-radius: 4px; max-width: 70vw; overflow: hidden; text-overflow: ellipsis; }
+        .satellite-tooltip { position: fixed; background: rgba(4,16,32,0.95); backdrop-filter: blur(12px); border: 1px solid #2f6d9e; border-left: 2px solid #8fd8ff; font-family: 'Courier New', monospace; color: #d6ecff; padding: 5px 8px; font-size: clamp(0.5rem, 2.2vw, 0.65rem); z-index: 200; pointer-events: none; white-space: nowrap; border-radius: 4px; max-width: 70vw; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 0 12px rgba(111,198,255,0.25); }
         .hidden-tooltip { opacity: 0; visibility: hidden; }
 
-        .full-info-panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.9); width: min(300px, 88vw); max-height: 70vh; background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); border: 2px solid #d4af37; border-radius: 8px; font-family: 'Courier New', monospace; color: #cccccc; padding: 14px; z-index: 500; opacity: 0; visibility: hidden; transition: all 0.25s ease; overflow-y: auto; pointer-events: auto; }
+        /* ===== HoMM3-STYLE WINDOW FRAMES ===== */
+        .wc { position: absolute; width: 10px; height: 10px; background: linear-gradient(135deg, #f2fbff 0%, #8fd8ff 45%, #2f9be0 100%); transform: rotate(45deg); box-shadow: 0 0 10px rgba(143,216,255,0.9), 0 0 3px #ffffff; z-index: 6; pointer-events: none; }
+        .wc.tl { top: -6px; left: -6px; }
+        .wc.tr { top: -6px; right: -6px; }
+        .wc.bl { bottom: -6px; left: -6px; }
+        .wc.br { bottom: -6px; right: -6px; }
+
+        .full-info-panel { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.9); width: min(300px, 88vw); max-height: 70vh; background: linear-gradient(165deg, rgba(13,40,70,0.98) 0%, rgba(5,16,32,0.98) 65%, rgba(9,31,56,0.98) 100%); backdrop-filter: blur(20px); border: 1px solid #7fc4f0; border-radius: 4px; font-family: 'Courier New', monospace; color: #d6ecff; padding: 14px; z-index: 500; opacity: 0; visibility: hidden; transition: all 0.25s ease; overflow-y: auto; pointer-events: auto; box-shadow: inset 0 0 0 1px #05131f, inset 0 0 0 3px rgba(63,127,181,0.6), inset 0 1px 0 rgba(190,235,255,0.25), 0 0 36px rgba(111,198,255,0.35); }
         .full-info-panel.open { opacity: 1; visibility: visible; transform: translate(-50%,-50%) scale(1); }
-        .full-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d4af37; padding-bottom: 8px; margin-bottom: 12px; }
-        .full-panel-title { font-size: clamp(0.8rem, 3.5vw, 1.1rem); font-weight: bold; color: #ffd700; word-break: break-word; }
-        .full-close-btn { font-size: 1.4rem; cursor: pointer; color: #d4af37; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 1px solid #d4af37; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
-        .full-close-btn:hover { background: rgba(212,175,55,0.2); }
-        .satellite-portrait { background: radial-gradient(circle, rgba(40,34,2,0.8), rgba(20,16,1,0.9)); border-radius: 50%; width: 60px; height: 60px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; border: 2px solid #d4af37; }
-        .portrait-symbol { font-size: 1.8rem; color: #d4af37; }
-        .info-section { margin: 8px 0; padding: 6px; background: rgba(20,16,1,0.5); border-left: 2px solid #d4af37; border-radius: 4px; }
-        .info-section-title { color: #ffd700; font-weight: bold; margin-bottom: 5px; font-size: 0.65rem; }
+        .full-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #7fc4f0; box-shadow: 0 1px 0 rgba(190,235,255,0.12); padding-bottom: 8px; margin-bottom: 12px; }
+        .full-panel-title { font-size: clamp(0.8rem, 3.5vw, 1.1rem); font-weight: bold; color: #eef9ff; word-break: break-word; text-shadow: 0 0 10px rgba(143,216,255,0.5); }
+        .full-close-btn { font-size: 1.4rem; cursor: pointer; color: #8fd8ff; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: 1px solid #7fc4f0; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
+        .full-close-btn:hover { background: rgba(111,198,255,0.2); color: #ffffff; }
+        .satellite-portrait { background: radial-gradient(circle, rgba(20,50,90,0.8), rgba(8,24,46,0.9)); border-radius: 50%; width: 60px; height: 60px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; border: 2px solid #7fc4f0; box-shadow: 0 0 14px rgba(111,198,255,0.3); }
+        .portrait-symbol { font-size: 1.8rem; color: #8fd8ff; text-shadow: 0 0 10px currentColor; }
+        .info-section { margin: 8px 0; padding: 6px; background: rgba(8,26,50,0.5); border-left: 2px solid #8fd8ff; border-radius: 4px; }
+        .info-section-title { color: #eef9ff; font-weight: bold; margin-bottom: 5px; font-size: 0.65rem; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.6rem; }
-        .info-item { display: flex; justify-content: space-between; border-bottom: 1px dotted #806000; padding: 3px 0; }
+        .info-item { display: flex; justify-content: space-between; border-bottom: 1px dotted #1e5a8c; padding: 3px 0; }
         .info-item.full-width { grid-column: 1 / -1; }
-        .info-label { color: #b8860b; flex-shrink: 0; margin-right: 6px; }
-        .info-value { color: #cccccc; text-align: right; word-break: break-word; }
-        .history-text { font-size: 0.6rem; line-height: 1.4; color: #aaaacc; }
-        .info-link { color: #ffd700; text-decoration: none; border-bottom: 1px dotted #b8860b; word-break: break-all; transition: color 0.2s; }
+        .info-label { color: #6fc6ff; flex-shrink: 0; margin-right: 6px; }
+        .info-value { color: #d6ecff; text-align: right; word-break: break-word; }
+        .history-text { font-size: 0.6rem; line-height: 1.4; color: #b9d6ee; }
+        .info-link { color: #9fdcff; text-decoration: none; border-bottom: 1px dotted #2f9be0; word-break: break-all; transition: color 0.2s; }
         .info-link:hover { color: #ffffff; }
 
-        .modal-base { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.9); background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); border: 2px solid #d4af37; border-radius: 8px; font-family: 'Courier New', monospace; color: #cccccc; z-index: 400; opacity: 0; visibility: hidden; transition: all 0.25s ease; box-shadow: 0 0 30px rgba(212,175,55,0.3); }
+        .modal-base { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.9); background: linear-gradient(165deg, rgba(13,40,70,0.98) 0%, rgba(5,16,32,0.98) 65%, rgba(9,31,56,0.98) 100%); backdrop-filter: blur(20px); border: 1px solid #7fc4f0; border-radius: 4px; font-family: 'Courier New', monospace; color: #d6ecff; z-index: 400; opacity: 0; visibility: hidden; transition: all 0.25s ease; box-shadow: inset 0 0 0 1px #05131f, inset 0 0 0 3px rgba(63,127,181,0.6), inset 0 1px 0 rgba(190,235,255,0.25), 0 0 36px rgba(111,198,255,0.35); }
         .modal-base.open { opacity: 1; visibility: visible; transform: translate(-50%,-50%) scale(1); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d4af37; padding: 12px 16px; }
-        .modal-title { font-size: 1rem; font-weight: bold; color: #ffd700; letter-spacing: 2px; }
-        .modal-close { font-size: 1.3rem; cursor: pointer; color: #d4af37; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid #d4af37; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
-        .modal-close:hover { background: rgba(212,175,55,0.2); transform: scale(1.05); }
-        .modal-footer { padding: 10px 16px; text-align: center; font-size: 0.55rem; color: #7a6929; border-top: 1px solid #2a2003; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #7fc4f0; box-shadow: 0 1px 0 rgba(190,235,255,0.12); padding: 12px 16px; }
+        .modal-title { font-size: 1rem; font-weight: bold; color: #eef9ff; letter-spacing: 2px; text-shadow: 0 0 10px rgba(143,216,255,0.5); }
+        .modal-close { font-size: 1.3rem; cursor: pointer; color: #8fd8ff; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 1px solid #7fc4f0; border-radius: 4px; transition: all 0.2s; flex-shrink: 0; }
+        .modal-close:hover { background: rgba(111,198,255,0.2); transform: scale(1.05); color: #ffffff; }
+        .modal-footer { padding: 10px 16px; text-align: center; font-size: 0.55rem; color: #3d6f96; border-top: 1px solid #0a2440; }
 
         .product-modal-lg {
             width: min(90vw, 600px);
@@ -189,13 +202,13 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            border: 2px solid #ffd700;
+            border-color: #cfeeff;
         }
         .product-modal-content {
             flex: 1;
             position: relative;
             width: 100%;
-            background: radial-gradient(circle at center, rgba(30,25,1,1), rgba(0,0,0,1));
+            background: radial-gradient(circle at center, rgba(10,34,60,1), rgba(3,12,26,1));
         }
         #largeProductCanvas {
             width: 100%;
@@ -205,64 +218,67 @@
         }
         .product-modal-info {
             padding: 20px;
-            background: rgba(15,12,1,0.95);
-            border-top: 1px solid #d4af37;
+            background: rgba(6,20,38,0.95);
+            border-top: 1px solid #8fd8ff;
             text-align: center;
         }
         .product-title-lg {
             font-size: 1.2rem;
-            color: #ffd700;
+            color: #eef9ff;
             margin-bottom: 8px;
             font-weight: bold;
             letter-spacing: 1px;
         }
         .product-desc-lg {
             font-size: 0.9rem;
-            color: #aaaaaa;
+            color: #a9c6de;
             margin-bottom: 12px;
         }
         .product-cta {
             display: inline-block;
             padding: 8px 16px;
-            border: 1px solid #d4af37;
-            color: #ffd700;
+            border: 1px solid #7fc4f0;
+            color: #eef9ff;
             font-size: 0.8rem;
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s;
+            background: linear-gradient(180deg, rgba(23,63,102,0.6), rgba(10,33,56,0.6));
+            border-radius: 2px;
         }
         .product-cta:hover {
-            background: rgba(212,175,55,0.2);
-            box-shadow: 0 0 15px rgba(212,175,55,0.4);
+            background: rgba(111,198,255,0.2);
+            box-shadow: 0 0 15px rgba(111,198,255,0.4);
+            color: #ffffff;
         }
 
         .contact-modal { width: min(340px, 88vw); padding: 0; }
         .contact-body { padding: 16px; }
-        .contact-email { background: rgba(40,34,2,0.6); padding: 14px; border-radius: 8px; text-align: center; border-left: 3px solid #d4af37; }
-        .email-label { color: #b8860b; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 8px; }
-        .email-address { font-size: 0.9rem; color: #ffd700; word-break: break-all; }
+        .contact-email { background: rgba(12,36,64,0.6); padding: 14px; border-radius: 4px; text-align: center; border-left: 3px solid #8fd8ff; }
+        .email-label { color: #6fc6ff; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 8px; }
+        .email-address { font-size: 0.9rem; color: #eef9ff; word-break: break-all; }
 
         .about-modal { width: min(360px, 88vw); padding: 0; }
         .about-body { padding: 16px; }
-        .about-message { background: rgba(40,34,2,0.6); padding: 16px 12px; border-radius: 8px; text-align: center; border-left: 3px solid #d4af37; }
+        .about-message { background: rgba(12,36,64,0.6); padding: 16px 12px; border-radius: 4px; text-align: center; border-left: 3px solid #8fd8ff; }
         .about-message p { margin: 8px 0; line-height: 1.45; font-size: 0.6rem; }
-        .about-highlight { color: #ffd700; font-weight: bold; letter-spacing: 1px; }
+        .about-highlight { color: #eef9ff; font-weight: bold; letter-spacing: 1px; }
 
         .menu-modal { width: min(350px, 90vw); max-height: 75vh; padding: 0; display: flex; flex-direction: column; }
         .menu-list-container { flex: 1; overflow-y: auto; padding: 6px 8px; -webkit-overflow-scrolling: touch; touch-action: pan-y; }
         .menu-list-container::-webkit-scrollbar { width: 3px; }
         .menu-list-container::-webkit-scrollbar-track { background: transparent; }
-        .menu-list-container::-webkit-scrollbar-thumb { background: #b8860b; border-radius: 2px; }
-        .menu-satellite-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 3px; background: rgba(30,25,1,0.5); border: 1px solid transparent; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; user-select: none; }
-        .menu-satellite-item:hover { background: rgba(60,50,2,0.7); border-color: #d4af37; transform: translateX(3px); }
+        .menu-list-container::-webkit-scrollbar-thumb { background: #2f9be0; border-radius: 2px; }
+        .menu-satellite-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 3px; background: rgba(10,30,55,0.5); border: 1px solid transparent; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; user-select: none; }
+        .menu-satellite-item:hover { background: rgba(18,52,92,0.75); border-color: #8fd8ff; transform: translateX(3px); }
         .menu-satellite-item:active { transform: scale(0.98) translateX(3px); }
         .menu-sat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 5px currentColor; }
         .menu-sat-info { flex: 1; min-width: 0; }
-        .menu-sat-name { font-size: 0.7rem; font-weight: bold; color: #ffd700; letter-spacing: 1px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .menu-sat-meta { font-size: 0.55rem; color: #8a7833; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .menu-sat-arrow { color: #b8860b; font-size: 0.65rem; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
+        .menu-sat-name { font-size: 0.7rem; font-weight: bold; color: #eef9ff; letter-spacing: 1px; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-sat-meta { font-size: 0.55rem; color: #5a8fb8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .menu-sat-arrow { color: #6fc6ff; font-size: 0.65rem; flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
         .menu-satellite-item:hover .menu-sat-arrow { opacity: 1; }
-        .menu-count { padding: 5px 10px 2px; font-size: 0.55rem; color: #6b5a1f; letter-spacing: 1px; }
+        .menu-count { padding: 5px 10px 2px; font-size: 0.55rem; color: #33608c; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -281,9 +297,9 @@
         </div>
     </div>
 
-    <div class="nav-item nav-menu" id="menuBtn">[ MENU ]</div>
-    <div class="nav-item nav-contact" id="contactBtn">[ CONTACT ]</div>
-    <div class="nav-item nav-about" id="aboutBtn">[ ABOUT ]</div>
+    <div class="nav-item nav-menu" id="menuBtn">MENU</div>
+    <div class="nav-item nav-contact" id="contactBtn">CONTACT</div>
+    <div class="nav-item nav-about" id="aboutBtn">ABOUT</div>
 
     <div class="scroll-arrow" id="scrollArrow">
         <div class="arrow-shape" id="arrowShape">█ █ █
@@ -328,9 +344,10 @@
     </div>
 
     <div class="info" id="infoContainer"><div class="controls-hint" id="hintMsg">[SPACE] JUMP | [TAP] INFO | &#128431; ROTATE</div></div>
-    <div id="satelliteTooltip" class="satellite-tooltip hidden-tooltip"><span id="tooltipName" style="color:#ffd700;font-weight:bold;">-</span><br><span id="tooltipClass">-</span> | <span id="tooltipYear">-</span></div>
+    <div id="satelliteTooltip" class="satellite-tooltip hidden-tooltip"><span id="tooltipName" style="color:#eef9ff;font-weight:bold;">-</span><br><span id="tooltipClass">-</span> | <span id="tooltipYear">-</span></div>
 
     <div id="productModal" class="modal-base product-modal-lg">
+        <span class="wc tl"></span><span class="wc tr"></span><span class="wc bl"></span><span class="wc br"></span>
         <div class="modal-close" id="productModalCloseBtn" style="position:absolute;top:10px;right:10px;z-index:10;">&#10005;</div>
         <div class="product-modal-content" id="largeProductCanvas"></div>
         <div class="product-modal-info">
@@ -341,6 +358,7 @@
     </div>
 
     <div id="fullInfoPanel" class="full-info-panel">
+        <span class="wc tl"></span><span class="wc tr"></span><span class="wc bl"></span><span class="wc br"></span>
         <div class="full-panel-header"><span class="full-panel-title" id="fullPanelTitle">&#9670; &#9670; &#9670;</span><div class="full-close-btn" id="fullCloseBtn">&#10005;</div></div>
         <div style="text-align:center;"><div class="satellite-portrait" id="satellitePortrait"><span class="portrait-symbol">&#9670;</span></div></div>
         <div class="info-section"><div class="info-section-title">&#9670; CORE DATA &#9670;</div><div class="info-grid"><div class="info-item"><span class="info-label">NAME:</span><span class="info-value" id="fullName">-</span></div><div class="info-item"><span class="info-label">CLASS:</span><span class="info-value" id="fullClass">-</span></div><div class="info-item full-width"><span class="info-label">YEAR:</span><span class="info-value" id="fullYear">-</span></div></div></div>
@@ -349,17 +367,20 @@
     </div>
 
     <div id="menuModal" class="modal-base menu-modal">
+        <span class="wc tl"></span><span class="wc tr"></span><span class="wc bl"></span><span class="wc br"></span>
         <div class="modal-header"><span class="modal-title">&#9670; SATELLITES &#9670;</span><div class="modal-close" id="menuModalCloseBtn">&#10005;</div></div>
         <div class="menu-count" id="menuCount">&#9670; 13 OBJECTS &#9670;</div>
         <div class="menu-list-container" id="menuListContainer"></div>
         <div class="modal-footer"><span>&#9670; tap to inspect &#9670;</span></div>
     </div>
     <div id="contactModal" class="modal-base contact-modal">
+        <span class="wc tl"></span><span class="wc tr"></span><span class="wc bl"></span><span class="wc br"></span>
         <div class="modal-header"><span class="modal-title">&#9670; CONTACT &#9670;</span><div class="modal-close" id="modalCloseBtn">&#10005;</div></div>
         <div class="contact-body"><div class="contact-email"><div class="email-label">&#9993; EMAIL</div><div class="email-address">offline_realm_5s@icloud.com</div></div></div>
         <div class="modal-footer"><span>&#9670; reach out for inquiries &#9670;</span></div>
     </div>
     <div id="aboutModal" class="modal-base about-modal">
+        <span class="wc tl"></span><span class="wc tr"></span><span class="wc bl"></span><span class="wc br"></span>
         <div class="modal-header"><span class="modal-title">&#9670; ABOUT &#9670;</span><div class="modal-close" id="aboutModalCloseBtn">&#10005;</div></div>
         <div class="about-body"><div class="about-message"><p><span class="about-highlight">&#9670; DM FOR INQUIRIES &#9670;</span></p><p>&#128230; <span class="about-highlight">CHIVESKELLA MIND</span> offers:<br>&#8594; custom garment production<br>&#8594; unique styling services<br>&#8594; full garment production cycle curation<br>&#8594; collaborative creative projects</p><p>&#9993; <span class="about-highlight">offline_realm_5s@icloud.com</span><br>or DM via <span class="about-highlight">@chiveskella</span></p><p style="font-size:0.65rem;margin-top:8px;">&#9670; open for collaborations & custom orders &#9670;</p></div></div>
         <div class="modal-footer"><span>&#9670; let's create something extraordinary &#9670;</span></div>
@@ -402,7 +423,7 @@
         const logoLines = ['\u2554' + '\u2550'.repeat(maxLogoLen + 2) + '\u2557', ...rawLogoLines.map(l => '\u2551 ' + l.padEnd(maxLogoLen) + ' \u2551'), '\u255A' + '\u2550'.repeat(maxLogoLen + 2) + '\u255D'];
         const asciiArtString = logoLines.join('\n');
 
-        /* ===== SATELLITE DATA (fix #1: broken HTML in Maybe Therapy links) ===== */
+        /* ===== SATELLITE DATA ===== */
         const satelliteData = [
             { name: "PAUSEMAG", composition: "https://pausemag.co.uk/2017/12/instagrammer-of-the-week-chiveskella/", year: "2017", classType: "Interview", history: "An interview for UK based online magazine PAUSE MAGAZINE about my approach to outfits." },
             { name: "TRASHCAMO", composition: "https://inhabitat.com/trash-camo-raises-awareness-and-money-to-combat-pollution/", year: "2021", classType: "Collection", history: "A collaborative collection with eco activist collective RosEco and Chiveskella presents ironic fashion collection to raise awareness on a forest pollution." },
@@ -419,9 +440,10 @@
             { name: "Maybe Therapy?", composition: '<a class="info-link" href="https://iskusstvo-info.ru/maybe-therapy-albiny-mohryakovoj/" target="_blank" rel="noopener noreferrer">iskusstvo-info.ru</a><br><a class="info-link" href="https://vladey.net/ru/artwork/7015" target="_blank" rel="noopener noreferrer">vladey.net</a><br><a class="info-link" href="https://vk.com/wall-92656044_1387" target="_blank" rel="noopener noreferrer">vk.com</a>', year: "2020", classType: "Collection", history: "A multidisciplinary art project by the artist Albina Mohryakova, exploring ritualistic approach to psychological therapy, artist Stas Falkov made the inspired graphic design, which I translated into a thematic garment collection." }
         ];
 
-        const glowColors = ['#ffd700','#daa520','#f0c040','#b8860b','#e6c200','#ccac00','#ffd700','#daa520','#b8860b','#f0c040','#ccac00','#e6c200','#daa520'];
+        /* Ice-white-blue palette: every object shimmers, but hues stay distinct */
+        const glowColors = ['#f2fbff','#8fd8ff','#4db4f0','#cfeeff','#2f9be0','#a5e1ff','#5fc9f8','#e6f7ff','#3fa9f5','#7fc0ff','#1f7fc4','#b8e8ff','#66bbee'];
         const glowIntensities = [0.55,0.35,0.45,0.65,0.30,0.50,0.60,0.40,0.70,0.35,0.55,0.50,0.45];
-        const sphereColors = [0x5c4a1a,0x665200,0x4a3b00,0x7a6929,0x5c4a1a,0x8b6914,0x665200,0x4a3b00,0x937c1e,0x5c4a1a,0x665200,0x4a3b00,0x7a6929];
+        const sphereColors = [0xa9c9de,0x4b8cb8,0x3a7aa8,0x93c2dd,0x2e6f9e,0x76acd2,0x4a92c0,0xa9cfe4,0x3a84b8,0x5c9cc6,0x22608f,0x86b8d8,0x4b90be];
         const portraitSymbols = ['\u25C8','\u25CF','\u25C6','\u25B2','\u25A0','\u2665','\u2666','\u2663','\u2660','\u2605','\u263E','\u2726','\u2736'];
 
         /* ===== MODAL LOGIC ===== */
@@ -455,7 +477,7 @@
         document.getElementById('aboutBtn').addEventListener('click', e => { e.stopPropagation(); openModal('aboutModal'); });
         document.getElementById('aboutModalCloseBtn').addEventListener('click', () => closeModal('aboutModal'));
 
-        /* ===== MENU (fix #2: scrollable on mobile) ===== */
+        /* ===== MENU ===== */
         const menuListContainer = document.getElementById('menuListContainer'), menuCountEl = document.getElementById('menuCount');
         function buildMenuList() {
             menuListContainer.innerHTML = '';
@@ -541,8 +563,8 @@
                 revealed[i] = true; render(); await new Promise(r => setTimeout(r, 40));
             }
             for (let p = 0; p < 3; p++) {
-                asciiLogoContainer.style.textShadow = '0 0 24px #ffd700, 0 0 12px #b8860b'; await new Promise(r => setTimeout(r, 63));
-                asciiLogoContainer.style.textShadow = '0 0 8px #d4af37'; await new Promise(r => setTimeout(r, 63));
+                asciiLogoContainer.style.textShadow = '0 0 24px #eef9ff, 0 0 12px #2f9be0'; await new Promise(r => setTimeout(r, 63));
+                asciiLogoContainer.style.textShadow = '0 0 8px #6fc6ff'; await new Promise(r => setTimeout(r, 63));
             }
             document.getElementById('headerAscii').textContent = asciiArtString;
             document.getElementById('glitchOverlay').classList.add('hidden');
@@ -550,14 +572,15 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.add('visible'));
             document.getElementById('ctrlPanel').classList.add('visible');
             document.getElementById('infoContainer').classList.add('visible');
+            audio.play().catch(() => {});
             setTimeout(() => { const h = document.getElementById('hintMsg'); if (h) h.classList.add('fade-out'); }, 6000);
         }
         setTimeout(() => animateLogoAssembly(), 1000);
 
-        /* ===== THREE.JS SCENE ===== */
+        /* ===== THREE.JS SCENE — icy white-blue space ===== */
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x000000);
-        scene.fog = new THREE.FogExp2(0x0a0800, 0.006);
+        scene.background = new THREE.Color(0x020b18);
+        scene.fog = new THREE.FogExp2(0x061a30, 0.006);
 
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         const camera = new THREE.PerspectiveCamera(isMobile ? 55 : 42, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -575,8 +598,8 @@
             effectComposer = new EffectComposer(renderer);
             effectComposer.addPass(new RenderPass(scene, camera));
             const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.3);
-            bloomPass.threshold = 0.2;
-            bloomPass.strength = isMobile ? 0.45 : 0.65;
+            bloomPass.threshold = 0.22;
+            bloomPass.strength = isMobile ? 0.4 : 0.55;
             effectComposer.addPass(bloomPass);
         } catch (e) {
             console.warn("Bloom init failed, fallback to standard render.", e);
@@ -591,45 +614,135 @@
         controls.enablePan = false;
         controls.target.set(0, 0.65, 0);
 
-        /* Sky sphere */
+        /* Sky sphere: blue-white stars */
         const starCvs = document.createElement('canvas'); starCvs.width = 1024; starCvs.height = 1024;
         const sCtx = starCvs.getContext('2d');
-        sCtx.fillStyle = '#000'; sCtx.fillRect(0, 0, 1024, 1024);
+        sCtx.fillStyle = '#020b18'; sCtx.fillRect(0, 0, 1024, 1024);
         for (let i = 0; i < 2500; i++) {
-            const g = 100 + Math.random() * 155;
-            sCtx.fillStyle = 'rgba(' + g + ',' + g + ',' + g + ',' + (0.2 + Math.random() * 0.4) + ')';
+            const b = 110 + Math.random() * 145;
+            sCtx.fillStyle = 'rgba(' + Math.round(b * 0.78) + ',' + Math.round(b * 0.9) + ',' + Math.round(b) + ',' + (0.2 + Math.random() * 0.4) + ')';
             sCtx.beginPath(); sCtx.arc(Math.random() * 1024, Math.random() * 1024, Math.random() * 1.2 + 0.3, 0, Math.PI * 2); sCtx.fill();
         }
-        const skySphere = new THREE.Mesh(new THREE.SphereGeometry(580, 64, 64), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(starCvs), side: THREE.BackSide, transparent: true, opacity: 0.85 }));
+        const skySphere = new THREE.Mesh(new THREE.SphereGeometry(580, 64, 64), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(starCvs), side: THREE.BackSide, transparent: true, opacity: 0.85, fog: false }));
         scene.add(skySphere);
 
+        /* ===== LIVING SKY: animated aurora ribbons above the ground grid ===== */
+        const auroraCvs = document.createElement('canvas'); auroraCvs.width = 512; auroraCvs.height = 256;
+        const aCtx = auroraCvs.getContext('2d');
+        const auroraTex = new THREE.CanvasTexture(auroraCvs);
+        const auroraDome = new THREE.Mesh(
+            new THREE.CylinderGeometry(470, 470, 300, 64, 1, true),
+            new THREE.MeshBasicMaterial({ map: auroraTex, side: THREE.BackSide, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })
+        );
+        auroraDome.position.y = 130;
+        scene.add(auroraDome);
+        /* soft breathing glow along the horizon line */
+        const horizonGlow = new THREE.Mesh(
+            new THREE.RingGeometry(120, 470, 96),
+            new THREE.MeshBasicMaterial({ color: 0x1e5a8c, transparent: true, opacity: 0.07, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })
+        );
+        horizonGlow.rotation.x = -Math.PI / 2; horizonGlow.position.y = -0.68;
+        scene.add(horizonGlow);
+        const auroraBands = [
+            { y: 150, amp: 26, thick: 46, speed: 0.11, freq: 3, color: '141,220,255', alpha: 0.14 },
+            { y: 118, amp: 20, thick: 60, speed: -0.07, freq: 5, color: '196,240,255', alpha: 0.10 },
+            { y: 182, amp: 16, thick: 34, speed: 0.05, freq: 4, color: '96,160,255', alpha: 0.12 }
+        ];
+        function updateAurora(t) {
+            aCtx.clearRect(0, 0, 512, 256);
+            auroraBands.forEach((b, bi) => {
+                const flick = 0.75 + Math.sin(t * 0.6 + bi * 2.1) * 0.25;
+                const wave = x => b.y + Math.sin((x / 512) * Math.PI * 2 * b.freq + t * b.speed * 6 + bi * 1.7) * b.amp + Math.sin((x / 512) * Math.PI * 2 * (b.freq + 2) - t * b.speed * 4) * b.amp * 0.4;
+                aCtx.beginPath();
+                for (let x = 0; x <= 512; x += 16) { const y = wave(x); if (x === 0) aCtx.moveTo(x, y); else aCtx.lineTo(x, y); }
+                for (let x = 512; x >= 0; x -= 16) { aCtx.lineTo(x, wave(x) + b.thick * (0.7 + 0.3 * Math.sin((x / 512) * Math.PI * 4 + bi))); }
+                aCtx.closePath();
+                const grad = aCtx.createLinearGradient(0, b.y - b.amp - 12, 0, b.y + b.amp + b.thick + 12);
+                grad.addColorStop(0, 'rgba(' + b.color + ',0)');
+                grad.addColorStop(0.45, 'rgba(' + b.color + ',' + (b.alpha * flick).toFixed(3) + ')');
+                grad.addColorStop(1, 'rgba(' + b.color + ',0)');
+                aCtx.fillStyle = grad;
+                aCtx.fill();
+            });
+            auroraTex.needsUpdate = true;
+        }
+
         /* Grid */
-        const gridHelper = new THREE.GridHelper(280, 140, 0xd4af37, 0x665200);
+        const gridHelper = new THREE.GridHelper(280, 140, 0x6fc6ff, 0x1b5f94);
         gridHelper.position.y = -0.72; gridHelper.material.transparent = true; gridHelper.material.opacity = 0.25; scene.add(gridHelper);
-        const fineGrid = new THREE.GridHelper(280, 280, 0xb8860b, 0x8b6914);
+        const fineGrid = new THREE.GridHelper(280, 280, 0x3aa0e8, 0x1b6fb8);
         fineGrid.position.y = -0.7; fineGrid.material.transparent = true; fineGrid.material.opacity = 0.12; scene.add(fineGrid);
-        const shadowReceiver = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9, metalness: 0.05, transparent: true, opacity: 0.3 }));
+        const shadowReceiver = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshStandardMaterial({ color: 0x0a1a2c, roughness: 0.9, metalness: 0.05, transparent: true, opacity: 0.3 }));
         shadowReceiver.rotation.x = -Math.PI / 2; shadowReceiver.position.y = -0.74; shadowReceiver.receiveShadow = true; scene.add(shadowReceiver);
 
-        /* Planet */
+        /* ===== PLANET: icy core + shimmer + atmosphere shell + particle halo ===== */
         const planetGroup = new THREE.Group(); scene.add(planetGroup);
-        const planetCore = new THREE.Mesh(new THREE.SphereGeometry(0.76, isMobile ? 64 : 128, isMobile ? 64 : 128), new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0x665200, emissiveIntensity: 0.2, metalness: 0.3, roughness: 0.6 }));
+        const planetCore = new THREE.Mesh(new THREE.SphereGeometry(0.76, isMobile ? 64 : 128, isMobile ? 64 : 128), new THREE.MeshStandardMaterial({ color: 0x1c3a5e, emissive: 0x1b6fb8, emissiveIntensity: 0.18, metalness: 0.45, roughness: 0.4 }));
         planetCore.castShadow = true; planetCore.receiveShadow = true; planetGroup.add(planetCore);
-        planetGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.82, isMobile ? 48 : 96, isMobile ? 48 : 96), new THREE.MeshStandardMaterial({ color: 0x334455, transparent: true, opacity: 0.1, emissive: 0x665200, emissiveIntensity: 0.08 })));
-        const planetGlow = new THREE.PointLight(0xd4af37, 0.45, 6.5); planetGroup.add(planetGlow);
+        /* faint inner haze only — the disk stays dark so satellites read clearly when crossing it */
+        planetGroup.add(new THREE.Mesh(new THREE.SphereGeometry(0.82, isMobile ? 48 : 96, isMobile ? 48 : 96), new THREE.MeshStandardMaterial({ color: 0x2f7fb8, transparent: true, opacity: 0.08, emissive: 0x1b6fb8, emissiveIntensity: 0.06 })));
+        /* rim-type atmosphere: BackSide halo hugging the limb instead of a shell covering the disk */
+        const planetAtmo = new THREE.Mesh(new THREE.SphereGeometry(1.06, isMobile ? 48 : 96, isMobile ? 48 : 96), new THREE.MeshBasicMaterial({ color: 0x9fe0ff, transparent: true, opacity: 0.22, side: THREE.BackSide, blending: THREE.AdditiveBlending, depthWrite: false, fog: false }));
+        planetGroup.add(planetAtmo);
+        /* atmosphere particle halo */
+        const planetPCount = isMobile ? 60 : 110, planetPPos = new Float32Array(planetPCount * 3);
+        for (let p = 0; p < planetPCount; p++) {
+            const r = 0.85 + Math.random() * 0.4;
+            const tth = Math.random() * Math.PI * 2, tph = Math.acos(2 * Math.random() - 1);
+            planetPPos[p * 3] = r * Math.sin(tph) * Math.cos(tth);
+            planetPPos[p * 3 + 1] = r * Math.cos(tph);
+            planetPPos[p * 3 + 2] = r * Math.sin(tph) * Math.sin(tth);
+        }
+        const planetPGeo = new THREE.BufferGeometry();
+        planetPGeo.setAttribute('position', new THREE.BufferAttribute(planetPPos, 3));
+        const planetParticles = new THREE.Points(planetPGeo, new THREE.PointsMaterial({ color: 0xd9f2ff, size: 0.03, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.7, depthWrite: false }));
+        planetGroup.add(planetParticles);
+        const planetGlow = new THREE.PointLight(0x9fe0ff, 0.35, 6.5); planetGroup.add(planetGlow);
 
-        /* Satellites */
+        /* ===== SATELLITES: glossy ice balls with shimmer + own atmospheres ===== */
         const smallSpheres = [];
+        const shimmerTmp = new THREE.Color();
         for (let i = 0; i < satelliteData.length; i++) {
-            const size = 0.1 + Math.random() * 0.06;
-            const mat = new THREE.MeshStandardMaterial({ color: sphereColors[i], emissive: parseInt(glowColors[i].slice(1), 16), emissiveIntensity: glowIntensities[i] * 0.7, metalness: 0.5, roughness: 0.35 });
+            const size = 0.11 + Math.random() * 0.06;
+            const mat = new THREE.MeshStandardMaterial({ color: sphereColors[i], emissive: parseInt(glowColors[i].slice(1), 16), emissiveIntensity: glowIntensities[i] * 0.85, metalness: 0.5, roughness: 0.35 });
             const sphere = new THREE.Mesh(new THREE.SphereGeometry(size, isMobile ? 32 : 64, isMobile ? 32 : 64), mat);
             sphere.castShadow = !isMobile; sphere.receiveShadow = true;
+
+            /* atmosphere shell around each satellite */
+            const atmoShell = new THREE.Mesh(
+                new THREE.SphereGeometry(size * 1.35, isMobile ? 16 : 24, isMobile ? 16 : 24),
+                new THREE.MeshBasicMaterial({ color: parseInt(glowColors[i].slice(1), 16), transparent: true, opacity: 0.18, blending: THREE.AdditiveBlending, depthWrite: false })
+            );
+            sphere.add(atmoShell);
+
+            /* atmosphere particles drifting around each satellite */
+            const atmoCount = isMobile ? 14 : 24, atmoPos = new Float32Array(atmoCount * 3);
+            for (let p = 0; p < atmoCount; p++) {
+                const r = size * (1.2 + Math.random() * 0.6);
+                const tth = Math.random() * Math.PI * 2, tph = Math.acos(2 * Math.random() - 1);
+                atmoPos[p * 3] = r * Math.sin(tph) * Math.cos(tth);
+                atmoPos[p * 3 + 1] = r * Math.cos(tph);
+                atmoPos[p * 3 + 2] = r * Math.sin(tph) * Math.sin(tth);
+            }
+            const atmoGeo = new THREE.BufferGeometry();
+            atmoGeo.setAttribute('position', new THREE.BufferAttribute(atmoPos, 3));
+            const atmoPts = new THREE.Points(atmoGeo, new THREE.PointsMaterial({ color: parseInt(glowColors[i].slice(1), 16), size: size * 0.34, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.9, depthWrite: false }));
+            sphere.add(atmoPts);
+
             const light = new THREE.PointLight(glowColors[i], glowIntensities[i] * 0.5, 2.8);
             sphere.add(light);
+
+            /* base HSL for iridescent shimmer, kept close to each object's own hue */
+            const baseCol = new THREE.Color(glowColors[i]);
+            const baseHSL = { h: 0, s: 0, l: 0 };
+            baseCol.getHSL(baseHSL);
+            const shimmerHue = baseHSL.s > 0.25 ? baseHSL.h : 0.575;
+            const shimmerSat = Math.max(0.3, baseHSL.s);
+            const shimmerLight = Math.max(0.62, baseHSL.l);
+
             const hR = 1.42 + Math.random() * 0.45, vA = 0.35 + Math.random() * 0.45, cY = 0.55 + Math.random() * 0.35;
             const bS = 0.55 + Math.random() * 0.45, ph = Math.random() * Math.PI * 2, el = 0.7 + Math.random() * 0.6;
-            sphere.userData = { horRadius: hR, vertAmp: vA, centerY: cY, baseSpeed: bS, currentSpeed: bS, phase: ph, ellipticity: el, angle: Math.random() * Math.PI * 2, satelliteIndex: i, light: light, lightIntensity: glowIntensities[i], isHovered: false, targetScale: 1 };
+            sphere.userData = { horRadius: hR, vertAmp: vA, centerY: cY, baseSpeed: bS, currentSpeed: bS, phase: ph, ellipticity: el, angle: Math.random() * Math.PI * 2, satelliteIndex: i, light: light, lightIntensity: glowIntensities[i], isHovered: false, targetScale: 1, atmoShell: atmoShell, atmoPts: atmoPts, shimmerHue: shimmerHue, shimmerSat: shimmerSat, shimmerLight: shimmerLight };
             scene.add(sphere); smallSpheres.push(sphere);
         }
 
@@ -641,7 +754,7 @@
                 const a = (j / 140) * Math.PI * 2;
                 pts.push(new THREE.Vector3(Math.cos(a * d.ellipticity + d.phase) * d.horRadius, d.centerY + Math.sin(a * 1.6 + d.phase) * d.vertAmp, Math.sin(a) * d.horRadius));
             }
-            const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xb8860b, transparent: true, opacity: 0.3 }));
+            const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0x3aa0e8, transparent: true, opacity: 0.35 }));
             scene.add(line); trajectories.push(line);
         });
 
@@ -651,7 +764,7 @@
         const orbPositions = new Float32Array(totalOrbitParticles * 3);
         const orbGeo = new THREE.BufferGeometry();
         orbGeo.setAttribute('position', new THREE.BufferAttribute(orbPositions, 3));
-        const orbParticlesMesh = new THREE.Points(orbGeo, new THREE.PointsMaterial({ color: 0xffd700, size: 0.018, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.55, depthWrite: false }));
+        const orbParticlesMesh = new THREE.Points(orbGeo, new THREE.PointsMaterial({ color: 0xbfe9ff, size: 0.018, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.55, depthWrite: false }));
         scene.add(orbParticlesMesh);
 
         function updateOrbitParticles() {
@@ -676,26 +789,26 @@
         const dustCount = isMobile ? 500 : 1200, dustGeo = new THREE.BufferGeometry(), dustPos = new Float32Array(dustCount * 3);
         for (let i = 0; i < dustCount; i++) { dustPos[i * 3] = (Math.random() - 0.5) * 7; dustPos[i * 3 + 1] = Math.random() * 2.5 - 0.4; dustPos[i * 3 + 2] = (Math.random() - 0.5) * 7; }
         dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
-        const dustParticles = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xffe680, size: 0.016, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35, depthWrite: false }));
+        const dustParticles = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xd9f2ff, size: 0.016, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35, depthWrite: false }));
         scene.add(dustParticles);
 
         /* Stars */
-        const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0xffe680, size: 0.045, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35, depthWrite: false }));
+        const stars = new THREE.Points(new THREE.BufferGeometry(), new THREE.PointsMaterial({ color: 0xd9f2ff, size: 0.045, transparent: true, blending: THREE.AdditiveBlending, opacity: 0.35, depthWrite: false, fog: false }));
         const starPos = [];
         for (let i = 0; i < (isMobile ? 1200 : 2400); i++) starPos.push((Math.random() - 0.5) * 620, Math.random() * 150 + 5, (Math.random() - 0.5) * 580);
         stars.geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
         scene.add(stars);
 
         /* Lights */
-        scene.add(new THREE.AmbientLight(0x222222, 0.55));
+        scene.add(new THREE.AmbientLight(0x223a52, 0.55));
         const mainLight = new THREE.DirectionalLight(0xffffff, 0.9);
         mainLight.position.set(3.5, 6.2, -2.8); mainLight.castShadow = true;
         mainLight.shadow.mapSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024);
         scene.add(mainLight);
-        const backLight = new THREE.PointLight(0xd4af37, 0.45); backLight.position.set(-2.5, 3, -3.5); scene.add(backLight);
-        const fillLight = new THREE.PointLight(0x8b6914, 0.4); fillLight.position.set(1.5, 1.8, 2); scene.add(fillLight);
+        const backLight = new THREE.PointLight(0x6fc6ff, 0.5); backLight.position.set(-2.5, 3, -3.5); scene.add(backLight);
+        const fillLight = new THREE.PointLight(0x1b6fb8, 0.45); fillLight.position.set(1.5, 1.8, 2); scene.add(fillLight);
 
-        /* ===== RAYCASTER / INTERACTION (fix #3: guard against modal overlap) ===== */
+        /* ===== RAYCASTER / INTERACTION ===== */
         const raycaster = new THREE.Raycaster(), touchVec = new THREE.Vector2();
         let currentHover = null;
         const tooltip = document.getElementById('satelliteTooltip');
@@ -766,7 +879,7 @@
             }
         }
 
-        /* Event listeners (fix #4: touchmove must not block modal scrolling) */
+        /* Event listeners */
         document.addEventListener('mousemove', e => updateHover(e.clientX, e.clientY));
         document.addEventListener('click', e => {
             if (!e.target.closest('.nav-item') && !e.target.closest('.modal-base') && !e.target.closest('.ctrl-panel') && !e.target.closest('.scroll-arrow') && !e.target.closest('.full-info-panel') && !e.target.closest('.product-card')) {
@@ -788,10 +901,10 @@
         /* ===== PHYSICS ===== */
         let isGrounded = true, yVel = 0, yPos = 0.58;
         window.addEventListener('keydown', e => {
-            if (e.code === 'Space') { e.preventDefault(); if (isGrounded) { yVel = 4.9; isGrounded = false; planetGlow.intensity = 0.8; } }
+            if (e.code === 'Space') { e.preventDefault(); if (isGrounded) { yVel = 4.9; isGrounded = false; planetGlow.intensity = 0.55; } }
         });
         function updatePhysics(dt) {
-            if (!isGrounded) { yVel += -12 * dt; yPos += yVel * dt; if (yPos <= 0.58) { yPos = 0.58; yVel = 0; isGrounded = true; planetGlow.intensity = 0.45; } }
+            if (!isGrounded) { yVel += -12 * dt; yPos += yVel * dt; if (yPos <= 0.58) { yPos = 0.58; yVel = 0; isGrounded = true; planetGlow.intensity = 0.35; } }
             planetGroup.position.y = yPos; controls.target.y = yPos;
         }
 
@@ -814,25 +927,49 @@
                     d.centerY + Math.sin(d.angle * 1.7 + d.phase * 1.3) * d.vertAmp,
                     Math.sin(d.angle) * d.horRadius
                 );
+
+                /* iridescent shimmer: hue/saturation/lightness slowly drift around each object's own base color */
+                const shHue = (d.shimmerHue + Math.sin(animTime * 0.45 + d.phase) * 0.035 + 1) % 1;
+                const shSat = Math.min(0.95, Math.max(0.2, d.shimmerSat + Math.sin(animTime * 1.1 + d.phase * 1.7) * 0.2));
+                const shLight = Math.min(0.93, Math.max(0.6, d.shimmerLight + Math.sin(animTime * 0.8 + d.phase * 2.3) * 0.12));
+                shimmerTmp.setHSL(shHue, shSat, shLight);
+                s.material.emissive.copy(shimmerTmp);
+                d.light.color.copy(shimmerTmp);
+                d.atmoShell.material.color.copy(shimmerTmp);
+                d.atmoPts.material.color.copy(shimmerTmp);
+                d.atmoShell.material.opacity = 0.15 + Math.sin(animTime * 1.5 + d.phase) * 0.06 + (d.isHovered ? 0.1 : 0);
+                d.atmoPts.rotation.y += dt * (0.8 + d.baseSpeed * 0.4);
+                d.atmoPts.rotation.x += dt * 0.3;
+
                 if (!d.isHovered) {
-                    const pulse = d.lightIntensity * 0.5 * dim + Math.sin(animTime * 2.5 + d.angle) * d.lightIntensity * 0.15 * dim;
+                    const pulse = d.lightIntensity * 0.75 * dim + Math.sin(animTime * 2.5 + d.angle) * d.lightIntensity * 0.18 * dim;
                     s.material.emissiveIntensity = pulse;
-                    d.light.intensity = d.lightIntensity * 0.4 * dim + Math.sin(animTime * 3 + d.angle) * d.lightIntensity * 0.1 * dim;
+                    d.light.intensity = d.lightIntensity * 0.45 * dim + Math.sin(animTime * 3 + d.angle) * d.lightIntensity * 0.12 * dim;
                 } else {
-                    s.material.emissiveIntensity = d.lightIntensity * 1.1;
+                    s.material.emissiveIntensity = d.lightIntensity * 1.25;
                     d.light.intensity = d.lightIntensity * 0.8 + Math.sin(animTime * 3 + d.angle) * d.lightIntensity * 0.1;
                 }
             });
         }
 
+        function updatePlanetFX(dt) {
+            /* planet shimmer + breathing atmosphere */
+            planetCore.material.emissive.setHSL((0.55 + Math.sin(animTime * 0.35) * 0.03 + 1) % 1, 0.65, 0.3 + Math.sin(animTime * 0.7) * 0.06);
+            planetAtmo.material.color.setHSL((0.54 + Math.sin(animTime * 0.5) * 0.04 + 1) % 1, 0.85, 0.68);
+            planetAtmo.material.opacity = 0.2 + Math.sin(animTime * 1.1) * 0.06;
+            planetParticles.rotation.y += dt * 0.22;
+            planetParticles.rotation.x += dt * 0.06;
+            planetParticles.material.opacity = 0.6 + Math.sin(animTime * 1.7) * 0.15;
+        }
+
         function animateTrails() {
             const dim = 1 - scrollFade;
-            trajectories.forEach((l, i) => { l.material.opacity = 0.3 * dim + Math.sin(animTime * 1.2 + i) * 0.01 * dim; });
+            trajectories.forEach((l, i) => { l.material.opacity = 0.35 * dim + Math.sin(animTime * 1.2 + i) * 0.01 * dim; });
             const spdMul = currentSpeed / 0.28 * (1 - scrollFade * 0.8);
             dustParticles.rotation.y += 0.005 * spdMul; dustParticles.rotation.x += 0.002 * spdMul;
             dustParticles.material.opacity = 0.35 * (1 - scrollFade * 0.7);
             skySphere.rotation.y += 0.00008;
-            planetGlow.intensity = 0.45 + Math.sin(animTime * 1.2) * 0.08;
+            planetGlow.intensity = 0.35 + Math.sin(animTime * 1.2) * 0.06;
             const gp = 0.25 + Math.sin(animTime * 0.8) * 0.05;
             gridHelper.material.opacity = gp; fineGrid.material.opacity = gp * 0.5;
         }
@@ -861,7 +998,7 @@
 
             const pLight1 = new THREE.DirectionalLight(0xffffff, 1.5);
             pLight1.position.set(2, 2, 5); pScene.add(pLight1);
-            const pLight2 = new THREE.DirectionalLight(0xd4af37, 0.6);
+            const pLight2 = new THREE.DirectionalLight(0x6fc6ff, 0.6);
             pLight2.position.set(-2, 1, 3); pScene.add(pLight2);
             pScene.add(new THREE.AmbientLight(0x404040, 1.2));
 
@@ -919,7 +1056,7 @@
                 largeProductContainer.appendChild(largeProductRenderer.domElement);
 
                 const lLight1 = new THREE.DirectionalLight(0xffffff, 2); lLight1.position.set(5, 5, 5); largeProductScene.add(lLight1);
-                const lLight2 = new THREE.DirectionalLight(0xd4af37, 1); lLight2.position.set(-5, 2, -2); largeProductScene.add(lLight2);
+                const lLight2 = new THREE.DirectionalLight(0x6fc6ff, 1); lLight2.position.set(-5, 2, -2); largeProductScene.add(lLight2);
                 largeProductScene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
                 largeProductControls = new OrbitControls(largeProductCamera, largeProductRenderer.domElement);
@@ -941,7 +1078,7 @@
                     largeProductModel.position.sub(center.clone().multiplyScalar(scale));
                 }, undefined, (error) => {
                     console.error('Error loading ' + productData.model + ' in modal:', error);
-                    if (largeProductContainer) largeProductContainer.innerHTML = '<div style="color:white;padding:20px;">Error loading 3D Model</div>';
+                    if (largeProductContainer) largeProductContainer.innerHTML = '<div style="color:#9fdcff;padding:20px;">Error loading 3D Model</div>';
                 });
             }, 60);
         }
@@ -970,12 +1107,17 @@
             updatePhysics(dt);
             animateSpheres(dt);
             updateOrbitParticles();
+            updatePlanetFX(dt);
             animateTrails();
             controls.update();
             animTime += dt;
             stars.rotation.y += 0.0001;
+            stars.material.opacity = 0.3 + Math.sin(animTime * 1.7) * 0.1;
+            updateAurora(animTime);
+            horizonGlow.material.opacity = 0.06 + Math.sin(animTime * 0.9) * 0.03;
+            auroraDome.rotation.y += dt * 0.01;
 
-            /* Render small product card scenes (fix #5: controls always updated) */
+            /* Render small product card scenes */
             smallProductScenes.forEach(scn => {
                 if (scn.controls) scn.controls.update();
                 scn.renderer.render(scn.scene, scn.camera);
@@ -997,39 +1139,19 @@
         }
         loop();
 
-        /* Logo click resets camera */
+        /* ===== LOGO CLICK RESETS CAMERA ===== */
         document.getElementById('logoHeader').addEventListener('click', () => {
-            camera.position.set(0, 1.5, 5.5); controls.target.set(0, 0.9, 0); controls.update();
+            controls.target.set(0, 0.65, 0);
+            camera.position.set(0, isMobile ? 0.9 : 1.2, isMobile ? 5.5 : 4.8);
         });
 
-        /* Resize */
+        /* ===== RESIZE ===== */
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            if (useComposer && effectComposer) effectComposer.setSize(window.innerWidth, window.innerHeight);
-
-            smallProductScenes.forEach(scn => {
-                const w = scn.container.clientWidth, h = scn.container.clientHeight;
-                if (w > 0 && h > 0) {
-                    scn.camera.aspect = w / h;
-                    scn.camera.updateProjectionMatrix();
-                    scn.renderer.setSize(w, h);
-                }
-            });
-
-            if (largeProductRenderer && largeProductCamera && largeProductContainer) {
-                const w = largeProductContainer.clientWidth, h = largeProductContainer.clientHeight;
-                if (w > 0 && h > 0) {
-                    largeProductCamera.aspect = w / h;
-                    largeProductCamera.updateProjectionMatrix();
-                    largeProductRenderer.setSize(w, h);
-                }
-            }
+            if (effectComposer) effectComposer.setSize(window.innerWidth, window.innerHeight);
         });
-
-        /* Autoplay audio */
-        setTimeout(() => { if (!isMuted && audio.paused) audio.play().catch(() => {}); }, 2000);
     </script>
 </body>
 </html>
